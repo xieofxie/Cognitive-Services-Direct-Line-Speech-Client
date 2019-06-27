@@ -10,7 +10,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: 'Cognitive-Services-Direct-Line-Speech-Client/DLSpeechClient.sln'
+  solution: 'DLSpeechClient.sln'
   buildPlatform: 'x64'
   buildConfiguration: 'Release'
 
