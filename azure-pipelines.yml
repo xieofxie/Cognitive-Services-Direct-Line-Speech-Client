@@ -21,6 +21,13 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
+- task: PoliCheck@1
+  inputs:
+    inputType: 'Basic'
+    targetType: 'F'
+    targetArgument: '$(Build.SourcesDirectory)'
+    result: 'PoliCheck.xml'
+
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
