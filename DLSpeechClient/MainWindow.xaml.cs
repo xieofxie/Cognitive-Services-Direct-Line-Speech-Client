@@ -38,7 +38,7 @@ namespace DLSpeechClient
         private const int UrlHistoryMaxLength = 10;
 
         private AppSettings settings = new AppSettings();
-        private SpeechBotConnector connector = null;
+        private DialogServiceConnector connector = null;
         private string lastBotEndpoint = null;
         private WaveOutEvent player = new WaveOutEvent();
         private Queue<WavQueueEntry> playbackStreams = new Queue<WavQueueEntry>();
@@ -165,7 +165,7 @@ namespace DLSpeechClient
         private void InitSpeechConnector()
         {
             var endpointValue = this.lastBotEndpoint = this.botEndpoint.Text;
-            BotConnectorConfig config = null;
+            DialogServiceConfig config = null;
 
             // Allow for tagging bot ids:
             var namedIdPrefix = new Regex(@"^\[(?<tag>[a-zA-Z0-9][ a-zA-Z_0-9]*)\]\s*(?<botId>.+)$", RegexOptions.Compiled);
@@ -177,7 +177,7 @@ namespace DLSpeechClient
 
             if (!string.IsNullOrWhiteSpace(this.settings.Settings.SubscriptionKey))
             {
-                config = BotConnectorConfig.FromSecretKey(endpointValue, this.settings.Settings.SubscriptionKey, this.settings.Settings.SubscriptionKeyRegion);
+                config = DialogServiceConfig.FromBotSecret(endpointValue, this.settings.Settings.SubscriptionKey, this.settings.Settings.SubscriptionKeyRegion);
             }
 
             if (!string.IsNullOrWhiteSpace(this.settings.Settings.UrlOverride))
@@ -224,7 +224,7 @@ namespace DLSpeechClient
                 config.SetProxy(this.settings.Settings.ProxyHostName, proxyPortNumber, string.Empty, string.Empty);
             }
 
-            this.connector = new SpeechBotConnector(config, AudioConfig.FromDefaultMicrophoneInput());
+            this.connector = new DialogServiceConnector(config, AudioConfig.FromDefaultMicrophoneInput());
             this.connector.ActivityReceived += this.Connector_ActivityReceived;
             this.connector.Recognizing += this.Connector_Recognizing;
             this.connector.Recognized += this.Connector_Recognized;
