@@ -112,9 +112,6 @@
     <Reference Include="AdaptiveCards.Rendering.Wpf.Xceed, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\AdaptiveCards.Rendering.Wpf.Xceed.1.2.0-beta1\lib\net452\AdaptiveCards.Rendering.Wpf.Xceed.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlAgilityPack.NetCore, Version=1.5.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlAgilityPack.NetCore.1.5.0.1\lib\net45\HtmlAgilityPack.NetCore.dll</HintPath>
-    </Reference>
     <Reference Include="Jot, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Jot.1.4.1\lib\net45\Jot.dll</HintPath>
     </Reference>
