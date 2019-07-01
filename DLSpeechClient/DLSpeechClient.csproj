@@ -104,13 +104,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AdaptiveCards, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\AdaptiveCards.1.2.0-beta1\lib\net452\AdaptiveCards.dll</HintPath>
+      <HintPath>..\packages\AdaptiveCards.1.2.0\lib\net452\AdaptiveCards.dll</HintPath>
     </Reference>
     <Reference Include="AdaptiveCards.Rendering.Wpf, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\AdaptiveCards.Rendering.Wpf.1.2.0-beta1\lib\net452\AdaptiveCards.Rendering.Wpf.dll</HintPath>
+      <HintPath>..\packages\AdaptiveCards.Rendering.Wpf.1.2.0\lib\net452\AdaptiveCards.Rendering.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="AdaptiveCards.Rendering.Wpf.Xceed, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\AdaptiveCards.Rendering.Wpf.Xceed.1.2.0-beta1\lib\net452\AdaptiveCards.Rendering.Wpf.Xceed.dll</HintPath>
+      <HintPath>..\packages\AdaptiveCards.Rendering.Wpf.Xceed.1.2.0\lib\net452\AdaptiveCards.Rendering.Wpf.Xceed.dll</HintPath>
     </Reference>
     <Reference Include="Jot, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Jot.1.4.1\lib\net45\Jot.dll</HintPath>
