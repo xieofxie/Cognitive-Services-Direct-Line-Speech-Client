@@ -53,13 +53,13 @@ in the bot's output activity was set.
 ### Screen Captures
 #### Settings page
 Subscription key & region required<br>
-![Setting page](docs\media\SettingsPage.png)
+![Setting page](docs/media/SettingsPage.png)
 #### Main page
 Enter Bot secret (one of two Direct Line Speech channel secrets), press "Reconnect" and then press Mic icon to speak.<br>
-![Main Page](docs\media\MainPage.png)
+![Main Page](docs/media/MainPage.png)
 #### Main page with activity
 Showing the bot response, with its activity payload<br>
-![Main Page](docs\media\MainPageWithActivity.png)
+![Main Page](docs/media/MainPageWithActivity.png)
 
 ## Troubleshooting
 
