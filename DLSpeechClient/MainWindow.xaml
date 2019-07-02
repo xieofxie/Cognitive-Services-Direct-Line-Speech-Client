@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DLSpeechClient"
         xmlns:json="clr-namespace:JsonViewerControl;assembly=JsonViewControl"
         mc:Ignorable="d"
-        Title="Direct Line Speech Client" Height="650" Width="1000">
+        Title="{Binding WindowTitle, RelativeSource={RelativeSource Mode=Self}}" Height="650" Width="1000">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Template">

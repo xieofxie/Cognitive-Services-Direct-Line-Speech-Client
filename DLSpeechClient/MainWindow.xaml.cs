@@ -69,6 +69,23 @@ namespace DLSpeechClient
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// Gets the window title string, which includes the assembly version number.
+        /// To update the assembly version number, edit this line in DLSpeechClient\Properties\AssemblyInfo.cs:
+        ///     [assembly: AssemblyVersion("#.#.#")]
+        /// Or in VS, right click on the DLSpeechClient project -> properties -> Assembly Information.
+        /// Version number is: [Major Version, Minor Version, Build Number, Revision].
+        /// See https://docs.microsoft.com/en-us/dotnet/api/system.version.
+        /// </summary>
+        public static string WindowTitle
+        {
+            get
+            {
+                Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+                return "Direct Line Speech Client v" + version;
+            }
+        }
+
         public ObservableCollection<MessageDisplay> Messages { get; private set; } = new ObservableCollection<MessageDisplay>();
 
         public ObservableCollection<ActivityDisplay> Activities { get; private set; } = new ObservableCollection<ActivityDisplay>();
