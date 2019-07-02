@@ -1,5 +1,6 @@
-# Direct Line Speech Client
+[![Build Status](https://msasg.visualstudio.com/Skyman/_apis/build/status/Azure-Samples.Cognitive-Services-Direct-Line-Speech-Client?branchName=master)](https://msasg.visualstudio.com/Skyman/_build/latest?definitionId=10284&branchName=master)
 
+# Direct Line Speech Client
 A Windows Presentation Foundation (WPF) application written in C#. <br>
 Demonstrates usage of the [Speech SDK](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-sdk)
 to manage voice communication with your Bot-Framework bot, 
