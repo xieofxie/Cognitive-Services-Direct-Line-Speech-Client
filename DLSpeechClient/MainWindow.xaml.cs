@@ -72,7 +72,7 @@ namespace DLSpeechClient
         /// <summary>
         /// Gets the window title string, which includes the assembly version number.
         /// To update the assembly version number, edit this line in DLSpeechClient\Properties\AssemblyInfo.cs:
-        ///     [assembly: AssemblyVersion("#.#.#")]
+        ///     [assembly: AssemblyVersion("#.#.#.#")]
         /// Or in VS, right click on the DLSpeechClient project -> properties -> Assembly Information.
         /// Version number is: [Major Version, Minor Version, Build Number, Revision].
         /// See https://docs.microsoft.com/en-us/dotnet/api/system.version.
