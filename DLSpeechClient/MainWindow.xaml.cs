@@ -77,7 +77,7 @@ namespace DLSpeechClient
         /// Microsoft Version number is: [Major Version, Minor Version, Build Number, Revision]
         /// (see https://docs.microsoft.com/en-us/dotnet/api/system.version).
         /// Per GitHub guidance, we use Semantic Versioning with [Major, Minor, Patch], so we ignore
-        /// the last number and treat the Build Number as the Patch (see https://semver.org/)
+        /// the last number and treat the Build Number as the Patch (see https://semver.org/).
         /// </summary>
         public static string WindowTitle
         {
