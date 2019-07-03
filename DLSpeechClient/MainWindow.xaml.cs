@@ -74,15 +74,17 @@ namespace DLSpeechClient
         /// To update the assembly version number, edit this line in DLSpeechClient\Properties\AssemblyInfo.cs:
         ///     [assembly: AssemblyVersion("#.#.#.#")]
         /// Or in VS, right click on the DLSpeechClient project -> properties -> Assembly Information.
-        /// Version number is: [Major Version, Minor Version, Build Number, Revision].
-        /// See https://docs.microsoft.com/en-us/dotnet/api/system.version.
+        /// Microsoft Version number is: [Major Version, Minor Version, Build Number, Revision]
+        /// (see https://docs.microsoft.com/en-us/dotnet/api/system.version).
+        /// Per GitHub guidance, we use Semantic Versioning with [Major, Minor, Patch], so we ignore
+        /// the last number and treat the Build Number as the Patch (see https://semver.org/)
         /// </summary>
         public static string WindowTitle
         {
             get
             {
                 Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-                return "Direct Line Speech Client v" + version;
+                return $"Direct Line Speech Client v{version.Major}.{version.Minor}.{version.Build}";
             }
         }
 
