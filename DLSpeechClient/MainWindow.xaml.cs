@@ -10,7 +10,6 @@ namespace DLSpeechClient
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
-    using System.Text.RegularExpressions;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
@@ -39,7 +38,7 @@ namespace DLSpeechClient
 
         private AppSettings settings = new AppSettings();
         private DialogServiceConnector connector = null;
-        private string lastBotEndpoint = null;
+        private string botSecret = null;
         private WaveOutEvent player = new WaveOutEvent();
         private Queue<WavQueueEntry> playbackStreams = new Queue<WavQueueEntry>();
         private WakeWordConfiguration activeWakeWordConfig = null;
@@ -142,7 +141,7 @@ namespace DLSpeechClient
         protected override void OnActivated(EventArgs e)
         {
             // Set this here as opposed to XAML since we do not do a full binding
-            this.botEndpoint.ItemsSource = this.settings.DisplaySettings.UrlHistory;
+            this.botSecretLabel.ItemsSource = this.settings.DisplaySettings.UrlHistory;
             this.CustomActivityCollectionCombo.ItemsSource = this.settings.DisplaySettings.CustomPayloadData;
             this.CustomActivityCollectionCombo.DisplayMemberPath = "Name";
             this.CustomActivityCollectionCombo.SelectedValuePath = "Name";
@@ -181,68 +180,82 @@ namespace DLSpeechClient
             });
         }
 
+        /// <summary>
+        /// The method reads user-entered settings and creates a new instance of the DialogServiceConnector object
+        /// when the "Reconnect" button is pressed (or the microphone button is pressed for the first time).
+        /// </summary>
         private void InitSpeechConnector()
         {
-            var endpointValue = this.lastBotEndpoint = this.botEndpoint.Text;
             DialogServiceConfig config = null;
 
-            // Allow for tagging bot ids:
-            var namedIdPrefix = new Regex(@"^\[(?<tag>[a-zA-Z0-9][ a-zA-Z_0-9]*)\]\s*(?<botId>.+)$", RegexOptions.Compiled);
-            var match = namedIdPrefix.Match(endpointValue);
-            if (match.Success)
-            {
-                endpointValue = match.Groups["botId"].Value;
-            }
+            // Save the Direct Line Speech channel secrete key. This is one of two keys you get when you register your bot with Direct Line speech
+            // channel. It uniquely defines the bot. Here we call it bot secrete for short.
+            this.botSecret = this.botSecretLabel.Text;
 
-            if (!string.IsNullOrWhiteSpace(this.settings.Settings.SubscriptionKey))
+            if (!string.IsNullOrWhiteSpace(this.settings.Settings.SubscriptionKey) &&
+                !string.IsNullOrWhiteSpace(this.botSecret))
             {
-                config = DialogServiceConfig.FromBotSecret(endpointValue, this.settings.Settings.SubscriptionKey, this.settings.Settings.SubscriptionKeyRegion);
-            }
-
-            if (!string.IsNullOrWhiteSpace(this.settings.Settings.UrlOverride))
-            {
-                config.SetProperty("SPEECH-Endpoint", this.settings.Settings.UrlOverride);
-            }
-
-            if (!string.IsNullOrWhiteSpace(this.settings.Settings.LogFilePath))
-            {
-                config.SetProperty("SPEECH-LogFilename", this.settings.Settings.LogFilePath);
+                // Set the dialog service configuration object based on three items:
+                // - Direct Line Speech channel secrete (aka "bot secrete")
+                // - Cognitive services speech subscription key. It is needed for billing.
+                // - The Azure region of the subscription key (e.g. "westus").
+                config = DialogServiceConfig.FromBotSecret(this.botSecret, this.settings.Settings.SubscriptionKey, this.settings.Settings.SubscriptionKeyRegion);
             }
 
             if (!string.IsNullOrWhiteSpace(this.settings.Settings.Language))
             {
+                // Set the speech recognition language. If not set, the default is "en-us".
                 config.SetProperty("SPEECH-RecoLanguage", this.settings.Settings.Language);
-            }
-            else
-            {
-                // (for now) required by the client
-                config.SetProperty("SPEECH-RecoLanguage", "en-US");
             }
 
             if (!string.IsNullOrEmpty(this.settings.Settings.FromId))
             {
+                // Set the from.id in the Bot-Framework Activity sent by this tool.
+                // from.id field identifies who generated the activity, and may be required by some bots.
+                // See https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-activity.md
+                // for Bot Framework Activity schema and from.id.
                 config.SetProperty("BOT-FromId", this.settings.Settings.FromId);
             }
 
+            if (!string.IsNullOrWhiteSpace(this.settings.Settings.LogFilePath))
+            {
+                // Speech SDK has verbose logging to local file, which may be useful when reporting issues.
+                // Supply the path to a text file on disk here. By default no logging happens.
+                config.SetProperty("SPEECH-LogFilename", this.settings.Settings.LogFilePath);
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.settings.Settings.UrlOverride))
+            {
+                // For prototyping new Direct Line Speech channel service feature, a custom service URL may be
+                // provided by Microsoft and entered in this tool.
+                config.SetProperty("SPEECH-Endpoint", this.settings.Settings.UrlOverride);
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.settings.Settings.ProxyHostName) &&
+                !string.IsNullOrWhiteSpace(this.settings.Settings.ProxyPortNumber) &&
+                int.TryParse(this.settings.Settings.ProxyPortNumber, out var proxyPortNumber))
+            {
+                // To funnel network traffic via a proxy, set the host name and port number here
+                config.SetProxy(this.settings.Settings.ProxyHostName, proxyPortNumber, string.Empty, string.Empty);
+            }
+
+            // If a the DialogServiceConnector object already exists, destroy it first
             if (this.connector != null)
             {
+                // First, unregister all events
                 this.connector.ActivityReceived -= this.Connector_ActivityReceived;
                 this.connector.Recognizing -= this.Connector_Recognizing;
                 this.connector.Recognized -= this.Connector_Recognized;
                 this.connector.Canceled -= this.Connector_Canceled;
                 this.connector.SessionStarted -= this.Connector_SessionStarted;
                 this.connector.SessionStopped -= this.Connector_SessionStopped;
+
+                // Then dispose the object
                 this.connector.Dispose();
                 this.connector = null;
             }
 
-            if (!string.IsNullOrWhiteSpace(this.settings.Settings.ProxyHostName)
-                && !string.IsNullOrWhiteSpace(this.settings.Settings.ProxyPortNumber)
-                && int.TryParse(this.settings.Settings.ProxyPortNumber, out var proxyPortNumber))
-            {
-                config.SetProxy(this.settings.Settings.ProxyHostName, proxyPortNumber, string.Empty, string.Empty);
-            }
-
+            // Create a new Dialog Service Connector for the above configuration and register to receive events
             this.connector = new DialogServiceConnector(config, AudioConfig.FromDefaultMicrophoneInput());
             this.connector.ActivityReceived += this.Connector_ActivityReceived;
             this.connector.Recognizing += this.Connector_Recognizing;
@@ -250,12 +263,16 @@ namespace DLSpeechClient
             this.connector.Canceled += this.Connector_Canceled;
             this.connector.SessionStarted += this.Connector_SessionStarted;
             this.connector.SessionStopped += this.Connector_SessionStopped;
+
+            // Open a connection to Direct Line Speech channel
             this.connector.ConnectAsync();
 
-            this.AddBotIdEntryIntoHistory(this.lastBotEndpoint);
+            // Save the recent bot secret in the history, so it can easily be retrieved later on
+            this.AddBotIdEntryIntoHistory(this.botSecret);
 
             if (this.settings.Settings.WakeWordEnabled)
             {
+                // Configure wake word (also known as "keyword")
                 this.activeWakeWordConfig = new WakeWordConfiguration(this.settings.Settings.WakeWordPath);
                 this.connector.StartKeywordRecognitionAsync(this.activeWakeWordConfig.WakeWordModel);
             }
@@ -393,9 +410,6 @@ namespace DLSpeechClient
 
         private void RenderedCard_OnAction(RenderedAdaptiveCard sender, AdaptiveActionEventArgs e)
         {
-            // TODO: update to Adaptive cards 1.2 nuget (ETA 5/24/2019). It contains a bugfix
-            // for inline cards not showing. Don't need to handle the ShowCard action here.
-
             if (e.Action is AdaptiveOpenUrlAction openUrlAction)
             {
                 Process.Start(openUrlAction.Url.AbsoluteUri);
@@ -477,7 +491,7 @@ namespace DLSpeechClient
         {
             this.StopAnyTTSPlayback();
 
-            if (this.lastBotEndpoint != null && this.lastBotEndpoint != this.botEndpoint.Text)
+            if (this.botSecret != null && this.botSecret != this.botSecretLabel.Text)
             {
                 this.SwitchToNewBotEndpoint();
             }
@@ -538,7 +552,7 @@ namespace DLSpeechClient
 
             e.Handled = true;
 
-            if (this.lastBotEndpoint != null && this.lastBotEndpoint != this.botEndpoint.Text)
+            if (this.botSecret != null && this.botSecret != this.botSecretLabel.Text)
             {
                 this.SwitchToNewBotEndpoint();
             }
@@ -697,12 +711,12 @@ namespace DLSpeechClient
 
         private void BotEndpoint_SelectionChanged(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Trace.TraceInformation($"BotEndpoint_SelectionChanged: {this.botEndpoint.Text}");
+            System.Diagnostics.Trace.TraceInformation($"BotEndpoint_SelectionChanged: {this.botSecretLabel.Text}");
         }
 
         private void BotEndpoint_TextChanged(object sender, TextChangedEventArgs e)
         {
-            System.Diagnostics.Trace.TraceInformation($"BotEndpoint_TextChanged: {this.botEndpoint.Text}");
+            System.Diagnostics.Trace.TraceInformation($"BotEndpoint_TextChanged: {this.botSecretLabel.Text}");
         }
 
         private void BotEndpoint_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -715,18 +729,17 @@ namespace DLSpeechClient
 
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
-            var endpointValue = this.botEndpoint.Text;
-            this.RemoveBotIdEntryFromHistory(endpointValue);
+            this.RemoveBotIdEntryFromHistory(this.botSecretLabel.Text);
         }
 
-        private void AddBotIdEntryIntoHistory(string lastBotEndpoint)
+        private void AddBotIdEntryIntoHistory(string botSecret)
         {
             var urlhistory = this.settings.DisplaySettings.UrlHistory;
 
-            var existingItem = urlhistory.FirstOrDefault(item => string.Compare(item, lastBotEndpoint, StringComparison.OrdinalIgnoreCase) == 0);
+            var existingItem = urlhistory.FirstOrDefault(item => string.Compare(item, botSecret, StringComparison.OrdinalIgnoreCase) == 0);
             if (existingItem == null)
             {
-                urlhistory.Insert(0, lastBotEndpoint);
+                urlhistory.Insert(0, botSecret);
                 if (urlhistory.Count == UrlHistoryMaxLength)
                 {
                     urlhistory.RemoveAt(UrlHistoryMaxLength - 1);
@@ -734,11 +747,11 @@ namespace DLSpeechClient
             }
         }
 
-        private void RemoveBotIdEntryFromHistory(string lastBotEndpoint)
+        private void RemoveBotIdEntryFromHistory(string botSecret)
         {
             var urlhistory = this.settings.DisplaySettings.UrlHistory;
 
-            var existingItem = urlhistory.FirstOrDefault(item => string.Compare(item, lastBotEndpoint, StringComparison.OrdinalIgnoreCase) == 0);
+            var existingItem = urlhistory.FirstOrDefault(item => string.Compare(item, botSecret, StringComparison.OrdinalIgnoreCase) == 0);
             if (existingItem != null)
             {
                 urlhistory.Remove(existingItem);

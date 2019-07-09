@@ -50,7 +50,7 @@
 
                 <Label Grid.Row="0" Grid.Column="0" Content="Bot Secret:" Margin="0,10,0,10" HorizontalAlignment="Left"/>
 
-                <ComboBox Grid.Row="0" Grid.Column="1" Name="botEndpoint" IsEditable="True"  Padding="5" Margin="5,10"
+                <ComboBox Grid.Row="0" Grid.Column="1" Name="botSecretLabel" IsEditable="True"  Padding="5" Margin="5,10"
                       PreviewKeyDown="BotEndpoint_PreviewKeyDown"
                       Text=""  />
                 <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2">

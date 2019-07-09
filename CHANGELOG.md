@@ -1,13 +1,6 @@
-## [project-title] Changelog
+## Direct Line Speech Client Changelog
 
 <a name="x.y.z"></a>
-# x.y.z (yyyy-mm-dd)
+# 1.0.0 (2019-07-08)
 
-*Features*
-* ...
-
-*Bug Fixes*
-* ...
-
-*Breaking Changes*
-* ...
+First open-source drop
