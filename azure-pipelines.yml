@@ -32,6 +32,11 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
+- task: PublishPipelineArtifact@1
+  inputs:
+    path: $(System.DefaultWorkingDirectory)/DLSpeechClient/bin/x64/Release
+    artifact: DLSpeechClientBuild
+    
 - task: VSTest@2
   inputs:
     platform: '$(buildPlatform)'
