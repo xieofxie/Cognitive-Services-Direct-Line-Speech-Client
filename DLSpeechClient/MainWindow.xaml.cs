@@ -188,15 +188,15 @@ namespace DLSpeechClient
         {
             DialogServiceConfig config = null;
 
-            // Save the Direct Line Speech channel secrete key. This is one of two keys you get when you register your bot with Direct Line speech
-            // channel. It uniquely defines the bot. Here we call it bot secrete for short.
+            // Save the Direct Line Speech channel secret key. This is one of two keys you get when you register your bot with Direct Line speech
+            // channel. It uniquely defines the bot. Here we call it bot secret for short.
             this.botSecret = this.botSecretLabel.Text;
 
             if (!string.IsNullOrWhiteSpace(this.settings.Settings.SubscriptionKey) &&
                 !string.IsNullOrWhiteSpace(this.botSecret))
             {
                 // Set the dialog service configuration object based on three items:
-                // - Direct Line Speech channel secrete (aka "bot secrete")
+                // - Direct Line Speech channel secret (aka "bot secret")
                 // - Cognitive services speech subscription key. It is needed for billing.
                 // - The Azure region of the subscription key (e.g. "westus").
                 config = DialogServiceConfig.FromBotSecret(this.botSecret, this.settings.Settings.SubscriptionKey, this.settings.Settings.SubscriptionKeyRegion);

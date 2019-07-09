@@ -40,7 +40,7 @@ Provides an easy way to test voice interactions with your bot before writing you
     - The default input language is "en-us" (US English). Update the _Language_ field as needed to select a different [language code from the "Speech-to-text" list](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support)  (e.g. enter "de-de" for German, without the quotes).
     - Press _Ok_ when you are done. 
     - Your entires will be saved and populated automatically when you launch the app again. 
-6. In the main window, enter the "Bot Secret" (see "Main page" screen capture below). This is one of the two channel secrete keys you got in the Azure website when you
+6. In the main window, enter the "Bot Secret" (see "Main page" screen capture below). This is one of the two channel secret keys you got in the Azure website when you
 registered your Bot-Framework bot with the Direct Line Speech channel. 
 7. Press "Reconnect". The application will try to connect to your bot via Direct Line Speech channel. 
 The message "New conversation started -- type or press the microphone button" will appear on the bottom text bar if connection
