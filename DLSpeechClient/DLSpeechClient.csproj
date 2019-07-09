@@ -24,7 +24,7 @@
     </NuGetPackageImportStamp>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <BuildToolsFxCopVersion>1.0.1</BuildToolsFxCopVersion>
-    <PublishUrl>\\analogfs\public\kona\DLSpeechClient\</PublishUrl>
+    <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
