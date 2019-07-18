@@ -40,7 +40,7 @@ Let's review the hardware, software, and subscriptions that you'll need to use t
 4. Run the executable. For example, for Release x64 build: `DLSpeechClient\bin\x64\Release\DLSpeechClient.exe`.
 5. When you first run the application, the **Setting** page will open. The first two fields are required (all others are optional):
     - Enter _Subscription key_. This is your Azure [Speech Services Key](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/get-started)
-    - Enter _Subscription key region_. This is the Azure region of your key (e.g. "westus")
+    - Enter _Subscription key region_. This is the Azure region of your key in the format specified by the "Speech SDK Parameter" column [in this table](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/regions#speech-to-text-text-to-speech-and-translation) (for example "westus")
     - The default input language is "en-us" (US English). Update the _Language_ field as needed to select a different [language code from the "Speech-to-text" list](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support).
     - Press _Ok_ when you're done.
     - Your entires will be saved and populated automatically when you launch the app again.
