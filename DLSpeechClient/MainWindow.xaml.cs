@@ -205,7 +205,7 @@ namespace DLSpeechClient
             if (!string.IsNullOrWhiteSpace(this.settings.Settings.Language))
             {
                 // Set the speech recognition language. If not set, the default is "en-us".
-                config.SetProperty("SPEECH-RecoLanguage", this.settings.Settings.Language);
+                config.SpeechRecognitionLanguage = this.settings.Settings.Language;
             }
 
             if (!string.IsNullOrEmpty(this.settings.Settings.FromId))
@@ -214,21 +214,21 @@ namespace DLSpeechClient
                 // from.id field identifies who generated the activity, and may be required by some bots.
                 // See https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-activity.md
                 // for Bot Framework Activity schema and from.id.
-                config.SetProperty("BOT-FromId", this.settings.Settings.FromId);
+                config.SetProperty(PropertyId.Conversation_From_Id, this.settings.Settings.FromId);
             }
 
             if (!string.IsNullOrWhiteSpace(this.settings.Settings.LogFilePath))
             {
                 // Speech SDK has verbose logging to local file, which may be useful when reporting issues.
                 // Supply the path to a text file on disk here. By default no logging happens.
-                config.SetProperty("SPEECH-LogFilename", this.settings.Settings.LogFilePath);
+                config.SetProperty(PropertyId.Speech_LogFilename, this.settings.Settings.LogFilePath);
             }
 
             if (!string.IsNullOrWhiteSpace(this.settings.Settings.UrlOverride))
             {
                 // For prototyping new Direct Line Speech channel service feature, a custom service URL may be
                 // provided by Microsoft and entered in this tool.
-                config.SetProperty("SPEECH-Endpoint", this.settings.Settings.UrlOverride);
+                config.EndpointId = this.settings.Settings.UrlOverride;
             }
 
             if (!string.IsNullOrWhiteSpace(this.settings.Settings.ProxyHostName) &&
