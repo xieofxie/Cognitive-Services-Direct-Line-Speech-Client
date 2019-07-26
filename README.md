@@ -59,7 +59,17 @@ The message **New conversation started -- type or press the microphone button** 
 
 ## Troubleshooting
 
-See _Debugging_ section in [Voice-first virtual assistants Preview: Frequently asked questions](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/faq-voice-first-virtual-assistants)
+If an error messages was shown in red in the main application window, use this table to troubleshoot:
+
+| Error | What should you do? |
+|-------|----------------------|
+|App Error (see log for details): Microsoft.CognitiveServices.Speech.csharp : Value cannot be null. Parameter name: speechConfig | This is a client application error. Make sure you have a non-empty value for *Bot Secret* in the main app window (see section [Register your bot with Direct Line Speech channel](#register-your-bot-with-direct-line-speech-channel)) | 
+|Error AuthenticationFailure : WebSocket Upgrade failed with an authentication error (401). Please check for correct subscription key (or authorization token) and region name| In the Settings page of the application, make sure you entered the Speech Subscription key and its region correctly.<br>Make sure your Bot Secret was entered correctly. |
+|Error ConnectionFailure : Connection was closed by the remote host. Error code: 1011. Error details: We could not connect to the bot before sending a message | Make sure you [checked the "Enable Streaming Endpoint"](#BotChannelRegistration) box and/or [toggled "Web sockets"](#ToggleWebSocket) to On.<br>Make sure your Azure App Service is running. If it is, try restarting your App Service.|
+|Error ConnectionFailure : Connection was closed by the remote host. Error code: 1011. Error details: Response status code does not indicate success: 500 (InternalServerError)| Your bot specified a Neural Voice in its output Activity [Speak](https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-activity.md#speak) field, but the Azure region associated with your Speech subscription key does not support Neural Voices. See [Standard and neural voices](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/regions#standard-and-neural-voices).|
+|Error ConnectionFailure : Connection was closed by the remote host. Error code: 1000. Error details: Exceeded maximum websocket connection idle duration(> 300000ms)| This is an expected error when the client left the connection to the channel open for more than 5 minutes without any activity |
+
+See also _Debugging_ section in [Voice-first virtual assistants Preview: Frequently asked questions](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/faq-voice-first-virtual-assistants#debugging)
 
 ## Resources
 - [Bot Framework](https://dev.botframework.com/) docs:
