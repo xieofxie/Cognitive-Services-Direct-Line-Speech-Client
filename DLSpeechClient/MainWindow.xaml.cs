@@ -443,7 +443,7 @@ namespace DLSpeechClient
             var message = "New conversation started - type or press the microphone button";
             if (this.settings.Settings.WakeWordEnabled)
             {
-                message = $"New conversation started - type, press the microphone button, or say '{this.activeWakeWordConfig.Name}'";
+                message = $"New conversation started - type, press the microphone button, or say the wake word";
             }
 
             this.UpdateStatus(message);

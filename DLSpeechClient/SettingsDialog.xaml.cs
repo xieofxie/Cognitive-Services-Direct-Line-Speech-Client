@@ -109,6 +109,10 @@ namespace DLSpeechClient
         {
             var openDialog = new OpenFileDialog();
 
+            // Filter files by the file extension .table, to find the file downloaded
+            // from the Azure web portal for "Speech Customization - Custom Wake Word"
+            openDialog.Filter = "Wake word files (*.table)|*.table|All files (*.*)|*.*";
+
             try
             {
                 var fileInfo = new FileInfo(this.WakeWordPathTextBox.Text);
@@ -157,7 +161,7 @@ namespace DLSpeechClient
             }
             else if (this.WakeWordEnabled)
             {
-                this.WakeWordStatusLabel.Content = $"Will listen for '{this.WakeWordConfig.Name}' upon next connection";
+                this.WakeWordStatusLabel.Content = $"Will listen for the wake word upon next connection";
             }
             else
             {
