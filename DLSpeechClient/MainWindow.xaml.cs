@@ -284,7 +284,7 @@ namespace DLSpeechClient
 
             if (this.settings.Settings.WakeWordEnabled)
             {
-                message = $"Stopped actively listening - waiting for '{this.activeWakeWordConfig.Name}'";
+                message = "Stopped actively listening - waiting for wake word";
             }
 
             this.UpdateStatus(message);
