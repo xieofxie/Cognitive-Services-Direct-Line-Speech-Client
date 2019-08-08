@@ -71,6 +71,10 @@ If an error messages was shown in red in the main application window, use this t
 
 See also _Debugging_ section in [Voice-first virtual assistants Preview: Frequently asked questions](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/faq-voice-first-virtual-assistants#debugging)
 
+## Sending custom activities to your bot
+
+Direct Line Speech Client allows you to author and send a custom JSON activity to your bot. This is done using the "Custom Activity" bar at the bottom of the main window and the "New", "Edit" and "Send" buttons. Enter a valid JSON format that conforms to the Bot-Framework Activity schema. An example is given in the file [example.json](docs\json\example.json).
+
 ## Resources
 - [Bot Framework](https://dev.botframework.com/) docs:
   - [About Direct Line](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/get-started)
