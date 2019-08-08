@@ -2,7 +2,7 @@
 
 # Direct Line Speech Client
 
-The Direct Line Speech client is a Windows Presentation Foundation (WPF) application in C# that makes it easy to test interactions with your bot before creating a custom client application. It demonstrates how to use the [Azure Speech Services Speech SDK](https://docs.microsoft.com/azure/cognitive-services/speech-service/speech-sdk) to manage communication with your Azure Bot-Framework bot. To use this client, you need to register your bot with the [Direct Line Speech](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-directlinespeech?view=azure-bot-service-4.0) channel.
+The Direct Line Speech Client is a Windows Presentation Foundation (WPF) application in C# that makes it easy to test interactions with your bot before creating a custom client application. It demonstrates how to use the [Azure Speech Services Speech SDK](https://docs.microsoft.com/azure/cognitive-services/speech-service/speech-sdk) to manage communication with your Azure Bot-Framework bot. To use this client, you need to register your bot with the [Direct Line Speech](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-directlinespeech?view=azure-bot-service-4.0) channel.
 
 ## Features
 
@@ -36,7 +36,7 @@ Let's review the hardware, software, and subscriptions that you'll need to use t
    ```bash
    cd Cognitive-Services-Direct-Line-Speech-Client
    ```
-3. Launch Visual Studio 2017, then open the solution for the Direct Line Speech client: `DLSpeechClient.sln`. The solution is in the root of the cloned repository.
+3. Launch Visual Studio 2017, then open the solution for the Direct Line Speech Client: `DLSpeechClient.sln`. The solution is in the root of the cloned repository.
 4. Run the executable. For example, for Release x64 build: `DLSpeechClient\bin\x64\Release\DLSpeechClient.exe`.
 5. When you first run the application, the **Setting** page will open. The first two fields are required (all others are optional):
     - Enter _Subscription key_. This is your Azure [Speech Services Key](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/get-started)
