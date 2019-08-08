@@ -73,7 +73,7 @@ See also _Debugging_ section in [Voice-first virtual assistants Preview: Frequen
 
 ## Sending custom activities to your bot
 
-Direct Line Speech Client allows you to author and send a custom JSON activity to your bot. This is done using the "Custom Activity" bar at the bottom of the main window and the "New", "Edit" and "Send" buttons. Enter a valid JSON format that conforms to the Bot-Framework Activity schema. An example is given in the file [example.json](docs\json\example.json).
+Direct Line Speech Client allows you to author and send a custom JSON activity to your bot. This is done using the "Custom Activity" bar at the bottom of the main window and the "New", "Edit" and "Send" buttons. Enter a valid JSON format that conforms to the Bot-Framework Activity schema. An example is given in the file [example.json](docs/json/example.json).
 
 ## Resources
 - [Bot Framework](https://dev.botframework.com/) docs:
