@@ -1,3 +1,13 @@
+---
+page_type: sample
+languages:
+- csharp
+products:
+- azure
+description: "The Direct Line Speech Client is a Windows Presentation Foundation (WPF) application in C# that makes it easy to test interactions with your bot before creating a custom client application."
+urlFragment: Cognitive-Services-Direct-Line-Speech-Client
+---
+
 [![Build Status](https://msasg.visualstudio.com/Skyman/_apis/build/status/Azure-Samples.Cognitive-Services-Direct-Line-Speech-Client?branchName=master)](https://msasg.visualstudio.com/Skyman/_build/latest?definitionId=10284&branchName=master)
 
 # Direct Line Speech Client
