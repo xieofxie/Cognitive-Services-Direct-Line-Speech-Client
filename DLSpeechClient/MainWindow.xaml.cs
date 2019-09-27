@@ -282,6 +282,8 @@ namespace DLSpeechClient
         {
             var message = "Stopped listening";
 
+            Debug.WriteLine($"SessionStopped event, id = {e.SessionId}");
+
             if (this.settings.Settings.WakeWordEnabled)
             {
                 message = "Stopped actively listening - waiting for wake word";
@@ -293,6 +295,7 @@ namespace DLSpeechClient
 
         private void Connector_SessionStarted(object sender, SessionEventArgs e)
         {
+            Debug.WriteLine($"SessionStarted event, id = {e.SessionId}");
             this.UpdateStatus("Listening ...");
             this.RunOnUiThread(() => this.ListeningState = ListenState.Listening);
         }
@@ -573,7 +576,8 @@ namespace DLSpeechClient
             var jsonConnectorActivity = JsonConvert.SerializeObject(bfActivity);
             this.Messages.Add(new MessageDisplay(bfActivity.Text, Sender.User));
             this.Activities.Add(new ActivityDisplay(jsonConnectorActivity, bfActivity, Sender.User));
-            this.connector.SendActivityAsync(jsonConnectorActivity);
+            string id = this.connector.SendActivityAsync(jsonConnectorActivity).Result;
+            Debug.WriteLine($"SendActivityAsync called, id = {id}");
         }
 
         private void ExportActivityLog_Click(object sender, RoutedEventArgs e)
@@ -695,7 +699,8 @@ namespace DLSpeechClient
                     this.InitSpeechConnector();
                 }
 
-                this.connector.SendActivityAsync(connectorActivity);
+                string id = this.connector.SendActivityAsync(connectorActivity).Result;
+                Debug.WriteLine($"SendActivityAsync called, id = {id}");
             }
         }
 
