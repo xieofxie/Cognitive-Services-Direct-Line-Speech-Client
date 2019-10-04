@@ -18,6 +18,8 @@ namespace DLSpeechClient.Settings
         private string subscriptionKeyRegion;
         private string language;
         private string logFilePath;
+        private string customSpeechEndpointId;
+        private bool customSpeechEnabled;
         private string wakeWordPath;
         private bool wakeWordEnabled;
         private string urlOverride;
@@ -63,6 +65,18 @@ namespace DLSpeechClient.Settings
             set => this.SetProperty(ref this.wakeWordPath, value);
         }
 
+        public string CustomSpeechEndpointId
+        {
+            get => this.customSpeechEndpointId;
+            set => this.SetProperty(ref this.customSpeechEndpointId, value);
+        }
+
+        public bool CustomSpeechEnabled
+        {
+            get => this.customSpeechEnabled;
+            set => this.SetProperty(ref this.customSpeechEnabled, value);
+        }
+
         public bool WakeWordEnabled
         {
             get => this.wakeWordEnabled;
@@ -93,13 +107,15 @@ namespace DLSpeechClient.Settings
             set => this.SetProperty(ref this.fromId, value);
         }
 
-        internal (string subscriptionKey, string subscriptionKeyRegion, string language, string logFilePath, bool wakeWordEnabled, string urlOverride, string proxyHostName, string proxyPortNumber, string fromId) Get()
+        internal (string subscriptionKey, string subscriptionKeyRegion, string language, string logFilePath, string customSpeechEndpointId, bool customSpeechEnabled, bool wakeWordEnabled, string urlOverride, string proxyHostName, string proxyPortNumber, string fromId) Get()
         {
             return (
                 this.subscriptionKey,
                 this.subscriptionKeyRegion,
                 this.language,
                 this.logFilePath,
+                this.customSpeechEndpointId,
+                this.customSpeechEnabled,
                 this.wakeWordEnabled,
                 this.urlOverride,
                 this.proxyHostName,
@@ -112,6 +128,8 @@ namespace DLSpeechClient.Settings
             string subscriptionKeyRegion,
             string language,
             string logFilePath,
+            string customSpeechEndpointId,
+            bool customSpeechEnabled,
             string wakeWordPath,
             bool wakeWordEnabled,
             string urlOverride,
@@ -123,6 +141,8 @@ namespace DLSpeechClient.Settings
                 this.subscriptionKeyRegion,
                 this.language,
                 this.logFilePath,
+                this.customSpeechEndpointId,
+                this.customSpeechEnabled,
                 this.wakeWordPath,
                 this.wakeWordEnabled,
                 this.urlOverride,
@@ -134,6 +154,8 @@ namespace DLSpeechClient.Settings
                 subscriptionKeyRegion,
                 language,
                 logFilePath,
+                customSpeechEndpointId,
+                customSpeechEnabled,
                 wakeWordPath,
                 wakeWordEnabled,
                 urlOverride,

@@ -103,6 +103,34 @@ namespace DLSpeechClient
         }
     }
 
+    public class CustomSpeechConfiguration
+    {
+        public CustomSpeechConfiguration(string endpointId)
+        {
+            if (endpointId == null)
+            {
+                endpointId = string.Empty;
+            }
+
+            this.EndpointId = endpointId;
+
+            Guid parsedGuid = Guid.Empty;
+            if (Guid.TryParse(this.EndpointId, out parsedGuid) &&
+                parsedGuid.ToString("D", null).Equals(this.EndpointId, StringComparison.OrdinalIgnoreCase))
+            {
+                this.IsValid = true;
+            }
+            else
+            {
+                this.IsValid = false;
+            }
+        }
+
+        public string EndpointId { get; private set; }
+
+        public bool IsValid { get; private set; }
+    }
+
     public class WakeWordConfiguration
     {
         public WakeWordConfiguration(string path)

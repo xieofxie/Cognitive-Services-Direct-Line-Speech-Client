@@ -42,6 +42,7 @@ namespace DLSpeechClient
         private WaveOutEvent player = new WaveOutEvent();
         private Queue<WavQueueEntry> playbackStreams = new Queue<WavQueueEntry>();
         private WakeWordConfiguration activeWakeWordConfig = null;
+        private CustomSpeechConfiguration customSpeechConfig = null;
         private ListenState listening = ListenState.NotListening;
         private AdaptiveCardRenderer renderer;
 
@@ -208,6 +209,14 @@ namespace DLSpeechClient
                 config.SpeechRecognitionLanguage = this.settings.Settings.Language;
             }
 
+            if (this.settings.Settings.CustomSpeechEnabled)
+            {
+                // config.SetServiceProperty(PropertyId.SpeechServiceConnection_EnableAudioLogging
+                // Set your custom speech end-point id here, as given to you by the speech portal https://speech.microsoft.com/portal.
+                // Otherwise the standard speech end-point will be used.
+                config.SetServiceProperty("cid", this.settings.Settings.CustomSpeechEndpointId, ServicePropertyChannel.UriQueryParameter);
+            }
+
             if (!string.IsNullOrEmpty(this.settings.Settings.FromId))
             {
                 // Set the from.id in the Bot-Framework Activity sent by this tool.
@@ -269,6 +278,11 @@ namespace DLSpeechClient
 
             // Save the recent bot secret in the history, so it can easily be retrieved later on
             this.AddBotIdEntryIntoHistory(this.botSecret);
+
+            if (this.settings.Settings.CustomSpeechEnabled)
+            {
+                this.customSpeechConfig = new CustomSpeechConfiguration(this.settings.Settings.CustomSpeechEndpointId);
+            }
 
             if (this.settings.Settings.WakeWordEnabled)
             {

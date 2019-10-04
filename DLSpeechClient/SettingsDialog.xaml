@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DLSpeechClient"
         mc:Ignorable="d"
-        Title="Settings" MinHeight="350" Height="425" Width="600" MinWidth="500" >
+        Title="Settings" MinHeight="540" Height="540" Width="600" MinWidth="500" >
     <Window.Resources>
         <Style TargetType="{x:Type TextBox}">
             <Setter Property="Margin" Value="0,2"/>
@@ -58,7 +58,6 @@
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
@@ -66,6 +65,29 @@
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
 
+                <Label  Grid.Row="0" Grid.Column="0" Content="Custom speech settings:" FontWeight="Bold" />
+
+                <Label  Grid.Row="1" Grid.Column="0" Content="Endpoint Id:"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Name="CustomSpeechEndpointIdTextBox" Text="{Binding CustomSpeechEndpointId}" TextChanged="CustomSpeechEndpointIdTextBox_TextChanged"/>
+
+                <Label  Grid.Row="2" Grid.Column="0" Content="Enabled:"/>
+                <CheckBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="CustomSpeechEnabledBox" IsChecked="{Binding CustomSpeechEnabled}" Checked="CustomSpeechEnabledBox_Checked" Unchecked="CustomSpeechEnabledBox_Checked"/>
+                <Label Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Name="CustomSpeechStatusLabel" Content="Placeholder"/>
+            </Grid>
+
+            <Grid Margin="0,5,5,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                
                 <Label  Grid.Row="0" Grid.Column="0" Content="Wake word settings:" FontWeight="Bold" />
 
                 <Label  Grid.Row="1" Grid.Column="0" Content="Model file path:"/>
@@ -74,7 +96,7 @@
                 
                 <Label  Grid.Row="2" Grid.Column="0" Content="Enabled:"/>
                 <CheckBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="WakeWordEnabledBox" IsChecked="{Binding WakeWordEnabled}" Checked="WakeWordEnabledBox_Checked" Unchecked="WakeWordEnabledBox_Checked"/>
-                <Label Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Name="WakeWordStatusLabel" Content="Hello"/>
+                <Label Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Name="WakeWordStatusLabel" Content="Placeholder"/>
             </Grid>
             
             <Grid Margin="0,5,5,0">

@@ -40,12 +40,15 @@ namespace DLSpeechClient
                 this.SubscriptionKeyRegion,
                 this.ConnectionLanguage,
                 this.LogFilePath,
+                this.CustomSpeechEndpointId,
+                this.CustomSpeechEnabled,
                 this.WakeWordEnabled,
                 this.UrlOverride,
                 this.ProxyHostName,
                 this.ProxyPortNumber,
                 this.FromId) = settings.Get();
 
+            this.CustomSpeechConfig = new CustomSpeechConfiguration(settings.CustomSpeechEndpointId);
             this.WakeWordConfig = new WakeWordConfiguration(settings.WakeWordPath);
 
             this.InitializeComponent();
@@ -73,10 +76,17 @@ namespace DLSpeechClient
 
         public bool WakeWordEnabled { get; set; }
 
+        public CustomSpeechConfiguration CustomSpeechConfig { get; set; }
+
+        public string CustomSpeechEndpointId { get; set; }
+
+        public bool CustomSpeechEnabled { get; set; }
+
         protected override void OnContentRendered(EventArgs e)
         {
             this.WakeWordPathTextBox.Text = this.settings.WakeWordPath ?? string.Empty;
             this.UpdateOkButtonState();
+            this.UpdateCustomSpeechStatus(false);
             this.UpdateWakeWordStatus();
             base.OnContentRendered(e);
             this.renderComplete = true;
@@ -89,6 +99,8 @@ namespace DLSpeechClient
                 this.SubscriptionKeyRegion,
                 this.ConnectionLanguage,
                 this.LogFilePath,
+                this.CustomSpeechEndpointId,
+                this.CustomSpeechEnabled,
                 this.WakeWordConfig.Path,
                 this.WakeWordEnabled,
                 this.UrlOverride,
@@ -147,6 +159,54 @@ namespace DLSpeechClient
             bool enableOkButton = !string.IsNullOrWhiteSpace(this.SubscriptionKeyTextBox.Text) &&
                             (!string.IsNullOrWhiteSpace(this.SubscriptionKeyRegionTextBox.Text) || !string.IsNullOrWhiteSpace(this.UrlOverrideTextBox.Text));
             this.OkButton.IsEnabled = enableOkButton;
+        }
+
+        private void CustomSpeechEnabledBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (this.renderComplete)
+            {
+                this.UpdateCustomSpeechStatus(true);
+            }
+        }
+
+        private void UpdateCustomSpeechStatus(bool updateLabelOnInvalidContent)
+        {
+            this.CustomSpeechConfig = new CustomSpeechConfiguration(this.CustomSpeechEndpointIdTextBox.Text);
+
+            if (!this.CustomSpeechConfig.IsValid)
+            {
+                if (updateLabelOnInvalidContent)
+                {
+                    this.CustomSpeechStatusLabel.Content = "Invalid endpoint ID format";
+                    Debug.WriteLine("Invalid endpoint ID format. It needs to be a GUID in the format ########-####-####-####-############");
+                }
+                else
+                {
+                    this.CustomSpeechStatusLabel.Content = "Click to enable";
+                }
+
+                this.CustomSpeechEnabled = false;
+                this.CustomSpeechEnabledBox.IsChecked = false;
+            }
+            else if (this.CustomSpeechEnabled)
+            {
+                this.CustomSpeechStatusLabel.Content = "Custom speech will be used upon next connection";
+            }
+            else
+            {
+                this.CustomSpeechStatusLabel.Content = "Click to enable";
+            }
+        }
+
+        private void CustomSpeechEndpointIdTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (this.renderComplete)
+            {
+                this.CustomSpeechEnabled = false;
+                this.CustomSpeechEnabledBox.IsChecked = false;
+            }
+
+            this.CustomSpeechStatusLabel.Content = "Click to enable";
         }
 
         private void UpdateWakeWordStatus()
