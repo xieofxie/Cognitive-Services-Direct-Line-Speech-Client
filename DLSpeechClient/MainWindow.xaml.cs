@@ -361,7 +361,7 @@ namespace DLSpeechClient
                     {
                         stream.Write(buffer, 0, (int)bytesRead);
                     }
-                });
+                }).Wait();
 
                 var channelData = activity.GetChannelData<SpeechChannelData>();
                 var id = channelData?.ConversationalAiData?.RequestInfo?.InteractionId;
