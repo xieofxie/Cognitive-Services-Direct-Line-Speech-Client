@@ -26,6 +26,7 @@ namespace DLSpeechClient
     /// </summary>
     public partial class SettingsDialog : Window
     {
+        private const int UrlHistoryMaxLength = 10;
         private RuntimeSettings settings;
 
         private bool renderComplete;
@@ -46,7 +47,9 @@ namespace DLSpeechClient
                 this.UrlOverride,
                 this.ProxyHostName,
                 this.ProxyPortNumber,
-                this.FromId) = settings.Get();
+                this.FromId,
+                this.settings.CognitiveServiceKeyHistory,
+                this.settings.CognitiveServiceRegionHistory) = settings.Get();
 
             this.CustomSpeechConfig = new CustomSpeechConfiguration(settings.CustomSpeechEndpointId);
             this.WakeWordConfig = new WakeWordConfiguration(settings.WakeWordPath);
@@ -92,8 +95,19 @@ namespace DLSpeechClient
             this.renderComplete = true;
         }
 
+        protected override void OnActivated(EventArgs e)
+        {
+            this.SubscriptionKeyComboBox.ItemsSource = this.settings.CognitiveServiceKeyHistory;
+            this.SubscriptionKeyComboBox.Text = this.SubscriptionKey;
+            this.SubscriptionRegionComboBox.ItemsSource = this.settings.CognitiveServiceRegionHistory;
+            this.SubscriptionRegionComboBox.Text = this.SubscriptionKeyRegion;
+            base.OnActivated(e);
+        }
+
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
+            this.AddCognitiveServicesKeyEntryIntoHistory(this.SubscriptionKey);
+            this.AddCognitiveServicesRegionEntryIntoHistory(this.SubscriptionKeyRegion);
             this.settings.Set(
                 this.SubscriptionKey,
                 this.SubscriptionKeyRegion,
@@ -106,9 +120,42 @@ namespace DLSpeechClient
                 this.UrlOverride,
                 this.ProxyHostName,
                 this.ProxyPortNumber,
-                this.FromId);
+                this.FromId,
+                this.settings.CognitiveServiceKeyHistory,
+                this.settings.CognitiveServiceRegionHistory);
+
             this.DialogResult = true;
             this.Close();
+        }
+
+        private void AddCognitiveServicesKeyEntryIntoHistory(string cognitiveServicesKey)
+        {
+            var keyHistory = this.settings.CognitiveServiceKeyHistory;
+
+            var existingItem = keyHistory.FirstOrDefault(item => string.Compare(item, cognitiveServicesKey, StringComparison.OrdinalIgnoreCase) == 0);
+            if (existingItem == null)
+            {
+                keyHistory.Insert(0, cognitiveServicesKey);
+                if (keyHistory.Count == UrlHistoryMaxLength)
+                {
+                    keyHistory.RemoveAt(UrlHistoryMaxLength - 1);
+                }
+            }
+        }
+
+        private void AddCognitiveServicesRegionEntryIntoHistory(string cognitiveServicesKey)
+        {
+            var regionHistory = this.settings.CognitiveServiceRegionHistory;
+
+            var existingItem = regionHistory.FirstOrDefault(item => string.Compare(item, cognitiveServicesKey, StringComparison.OrdinalIgnoreCase) == 0);
+            if (existingItem == null)
+            {
+                regionHistory.Insert(0, cognitiveServicesKey);
+                if (regionHistory.Count == UrlHistoryMaxLength)
+                {
+                    regionHistory.RemoveAt(UrlHistoryMaxLength - 1);
+                }
+            }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -156,8 +203,8 @@ namespace DLSpeechClient
         private void UpdateOkButtonState()
         {
             // BUGBUG: The transfer into variables does not seem to be done consistently with these events so we read straight from the controls
-            bool enableOkButton = !string.IsNullOrWhiteSpace(this.SubscriptionKeyTextBox.Text) &&
-                            (!string.IsNullOrWhiteSpace(this.SubscriptionKeyRegionTextBox.Text) || !string.IsNullOrWhiteSpace(this.UrlOverrideTextBox.Text));
+            bool enableOkButton = !string.IsNullOrWhiteSpace(this.SubscriptionKeyComboBox.Text) &&
+                            (!string.IsNullOrWhiteSpace(this.SubscriptionRegionComboBox.Text) || !string.IsNullOrWhiteSpace(this.UrlOverrideTextBox.Text));
             this.OkButton.IsEnabled = enableOkButton;
         }
 

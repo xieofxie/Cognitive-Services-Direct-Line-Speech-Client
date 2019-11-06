@@ -5,6 +5,7 @@ namespace DLSpeechClient.Settings
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Linq;
     using System.Runtime.CompilerServices;
@@ -14,6 +15,8 @@ namespace DLSpeechClient.Settings
     [Serializable]
     public class RuntimeSettings : INotifyPropertyChanged
     {
+        private ObservableCollection<string> cognitiveServiceKeyHistory = new ObservableCollection<string>();
+        private ObservableCollection<string> cognitiveServiceRegionHistory = new ObservableCollection<string>();
         private string subscriptionKey;
         private string subscriptionKeyRegion;
         private string language;
@@ -106,8 +109,52 @@ namespace DLSpeechClient.Settings
             get => this.fromId;
             set => this.SetProperty(ref this.fromId, value);
         }
+        public ObservableCollection<string> CognitiveServiceKeyHistory
+        {
+            get
+            {
+                return this.cognitiveServiceKeyHistory;
+            }
 
-        internal (string subscriptionKey, string subscriptionKeyRegion, string language, string logFilePath, string customSpeechEndpointId, bool customSpeechEnabled, bool wakeWordEnabled, string urlOverride, string proxyHostName, string proxyPortNumber, string fromId) Get()
+            
+            set
+            {
+                if (this.cognitiveServiceKeyHistory != null)
+                {
+                    this.cognitiveServiceKeyHistory.CollectionChanged -= this.CognitiveServiceKeyHistory_CollectionChanged;
+                }
+
+                this.cognitiveServiceKeyHistory = value;
+                this.cognitiveServiceKeyHistory.CollectionChanged += this.CognitiveServiceKeyHistory_CollectionChanged;
+                this.OnPropertyChanged();
+            }
+            
+        }
+
+        public ObservableCollection<string> CognitiveServiceRegionHistory
+        {
+            get
+            {
+                return this.cognitiveServiceRegionHistory;
+            }
+
+            
+            set
+            {
+                if (this.cognitiveServiceRegionHistory != null)
+                {
+                    this.cognitiveServiceRegionHistory.CollectionChanged -= this.CognitiveServiceRegionHistory_CollectionChanged;
+                }
+
+                this.cognitiveServiceRegionHistory = value;
+                this.cognitiveServiceRegionHistory.CollectionChanged += this.CognitiveServiceRegionHistory_CollectionChanged;
+                this.OnPropertyChanged();
+            }
+            
+        }
+
+        internal (string subscriptionKey, string subscriptionKeyRegion, string language, string logFilePath, string customSpeechEndpointId, bool customSpeechEnabled, bool wakeWordEnabled, string urlOverride,
+            string proxyHostName, string proxyPortNumber, string fromId, ObservableCollection<string> CognitiveServiceKeyHistory, ObservableCollection<string> CognitiveServiceRegionHistory) Get()
         {
             return (
                 this.subscriptionKey,
@@ -120,7 +167,9 @@ namespace DLSpeechClient.Settings
                 this.urlOverride,
                 this.proxyHostName,
                 this.proxyPortNumber,
-                this.fromId);
+                this.fromId,
+                this.CognitiveServiceKeyHistory,
+                this.CognitiveServiceRegionHistory);
         }
 
         internal void Set(
@@ -135,7 +184,9 @@ namespace DLSpeechClient.Settings
             string urlOverride,
             string proxyHostName,
             string proxyPortNumber,
-            string fromId)
+            string fromId, 
+            ObservableCollection<string> cognitiveServiceKeyHistory,
+            ObservableCollection<string> cognitiveServiceRegionHistory)
         {
             (this.subscriptionKey,
                 this.subscriptionKeyRegion,
@@ -148,7 +199,9 @@ namespace DLSpeechClient.Settings
                 this.urlOverride,
                 this.proxyHostName,
                 this.proxyPortNumber,
-                this.fromId)
+                this.fromId,
+                this.cognitiveServiceKeyHistory,
+                this.cognitiveServiceRegionHistory)
                 =
             (subscriptionKey,
                 subscriptionKeyRegion,
@@ -161,7 +214,9 @@ namespace DLSpeechClient.Settings
                 urlOverride,
                 proxyHostName,
                 proxyPortNumber,
-                fromId);
+                fromId,
+                CognitiveServiceKeyHistory,
+                CognitiveServiceRegionHistory);
         }
 
         protected void SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
@@ -171,6 +226,20 @@ namespace DLSpeechClient.Settings
                 storage = value;
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+        protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void CognitiveServiceKeyHistory_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            this.OnPropertyChanged(nameof(this.CognitiveServiceKeyHistory));
+        }
+
+        private void CognitiveServiceRegionHistory_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            this.OnPropertyChanged(nameof(this.CognitiveServiceRegionHistory));
         }
     }
 }

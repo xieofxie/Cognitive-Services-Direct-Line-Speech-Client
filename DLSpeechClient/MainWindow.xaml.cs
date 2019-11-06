@@ -38,7 +38,6 @@ namespace DLSpeechClient
 
         private AppSettings settings = new AppSettings();
         private DialogServiceConnector connector = null;
-        private string botSecret = null;
         private WaveOutEvent player = new WaveOutEvent();
         private Queue<WavQueueEntry> playbackStreams = new Queue<WavQueueEntry>();
         private WakeWordConfiguration activeWakeWordConfig = null;
@@ -124,11 +123,11 @@ namespace DLSpeechClient
         protected override void OnContentRendered(EventArgs e)
         {
             base.OnContentRendered(e);
-            if (string.IsNullOrWhiteSpace(this.settings.Settings.SubscriptionKey)
+            if (string.IsNullOrWhiteSpace(this.settings.RuntimeSettings.SubscriptionKey)
                 ||
-                string.IsNullOrWhiteSpace(this.settings.Settings.SubscriptionKeyRegion))
+                string.IsNullOrWhiteSpace(this.settings.RuntimeSettings.SubscriptionKeyRegion))
             {
-                var settingsDialog = new SettingsDialog(this.settings.Settings);
+                var settingsDialog = new SettingsDialog(this.settings.RuntimeSettings);
                 bool succeeded;
                 succeeded = settingsDialog.ShowDialog() ?? false;
 
@@ -142,7 +141,6 @@ namespace DLSpeechClient
         protected override void OnActivated(EventArgs e)
         {
             // Set this here as opposed to XAML since we do not do a full binding
-            this.botSecretLabel.ItemsSource = this.settings.DisplaySettings.UrlHistory;
             this.CustomActivityCollectionCombo.ItemsSource = this.settings.DisplaySettings.CustomPayloadData;
             this.CustomActivityCollectionCombo.DisplayMemberPath = "Name";
             this.CustomActivityCollectionCombo.SelectedValuePath = "Name";
@@ -189,63 +187,58 @@ namespace DLSpeechClient
         {
             DialogServiceConfig config = null;
 
-            // Save the Direct Line Speech channel secret key. This is one of two keys you get when you register your bot with Direct Line speech
-            // channel. It uniquely defines the bot. Here we call it bot secret for short.
-            this.botSecret = this.botSecretLabel.Text;
-
-            if (!string.IsNullOrWhiteSpace(this.settings.Settings.SubscriptionKey) &&
-                !string.IsNullOrWhiteSpace(this.botSecret))
+            if (!string.IsNullOrWhiteSpace(this.settings.RuntimeSettings.SubscriptionKey) &&
+                !string.IsNullOrWhiteSpace(this.settings.RuntimeSettings.SubscriptionKeyRegion))
             {
-                // Set the dialog service configuration object based on three items:
-                // - Direct Line Speech channel secret (aka "bot secret")
-                // - Cognitive services speech subscription key. It is needed for billing.
-                // - The Azure region of the subscription key (e.g. "westus").
-                config = DialogServiceConfig.FromBotSecret(this.botSecret, this.settings.Settings.SubscriptionKey, this.settings.Settings.SubscriptionKeyRegion);
+                // Set the dialog service configuration object based on two items:
+                // Cognitive services speech subscription key. It is needed for billing and is tied to the bot registration.
+                // The Azure region of the subscription key(e.g. "westus").
+                config = BotFrameworkConfig.FromSubscription(this.settings.RuntimeSettings.SubscriptionKey, this.settings.RuntimeSettings.SubscriptionKeyRegion);
             }
 
-            if (!string.IsNullOrWhiteSpace(this.settings.Settings.Language))
+            if (!string.IsNullOrWhiteSpace(this.settings.RuntimeSettings.Language))
             {
                 // Set the speech recognition language. If not set, the default is "en-us".
-                config.SpeechRecognitionLanguage = this.settings.Settings.Language;
+                config.Language = this.settings.RuntimeSettings.Language;
             }
 
-            if (this.settings.Settings.CustomSpeechEnabled)
+            if (this.settings.RuntimeSettings.CustomSpeechEnabled)
             {
                 // config.SetServiceProperty(PropertyId.SpeechServiceConnection_EnableAudioLogging
                 // Set your custom speech end-point id here, as given to you by the speech portal https://speech.microsoft.com/portal.
                 // Otherwise the standard speech end-point will be used.
-                config.SetServiceProperty("cid", this.settings.Settings.CustomSpeechEndpointId, ServicePropertyChannel.UriQueryParameter);
+                config.SetServiceProperty("cid", this.settings.RuntimeSettings.CustomSpeechEndpointId, ServicePropertyChannel.UriQueryParameter);
             }
 
-            if (!string.IsNullOrEmpty(this.settings.Settings.FromId))
+            if (!string.IsNullOrEmpty(this.settings.RuntimeSettings.FromId))
             {
                 // Set the from.id in the Bot-Framework Activity sent by this tool.
                 // from.id field identifies who generated the activity, and may be required by some bots.
                 // See https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-activity.md
                 // for Bot Framework Activity schema and from.id.
-                config.SetProperty(PropertyId.Conversation_From_Id, this.settings.Settings.FromId);
+                config.SetProperty(PropertyId.Conversation_From_Id, this.settings.RuntimeSettings.FromId);
             }
 
-            if (!string.IsNullOrWhiteSpace(this.settings.Settings.LogFilePath))
+            if (!string.IsNullOrWhiteSpace(this.settings.RuntimeSettings.LogFilePath))
             {
                 // Speech SDK has verbose logging to local file, which may be useful when reporting issues.
                 // Supply the path to a text file on disk here. By default no logging happens.
-                config.SetProperty(PropertyId.Speech_LogFilename, this.settings.Settings.LogFilePath);
+                config.SetProperty(PropertyId.Speech_LogFilename, this.settings.RuntimeSettings.LogFilePath);
             }
 
-            if (!string.IsNullOrWhiteSpace(this.settings.Settings.UrlOverride))
+            if (!string.IsNullOrWhiteSpace(this.settings.RuntimeSettings.UrlOverride))
             {
                 // For prototyping new Direct Line Speech channel service feature, a custom service URL may be
                 // provided by Microsoft and entered in this tool.
-                config.EndpointId = this.settings.Settings.UrlOverride;
+                // config.EndpointId = this.settings.Settings.UrlOverride;
             }
 
-            if (!string.IsNullOrWhiteSpace(this.settings.Settings.ProxyHostName) &&
-                !string.IsNullOrWhiteSpace(this.settings.Settings.ProxyPortNumber) &&
-                int.TryParse(this.settings.Settings.ProxyPortNumber, out var proxyPortNumber))
+            if (!string.IsNullOrWhiteSpace(this.settings.RuntimeSettings.ProxyHostName) &&
+                !string.IsNullOrWhiteSpace(this.settings.RuntimeSettings.ProxyPortNumber) &&
+                int.TryParse(this.settings.RuntimeSettings.ProxyPortNumber, out var proxyPortNumber))
             {
                 // To funnel network traffic via a proxy, set the host name and port number here
-                config.SetProxy(this.settings.Settings.ProxyHostName, proxyPortNumber, string.Empty, string.Empty);
+                config.SetProxy(this.settings.RuntimeSettings.ProxyHostName, proxyPortNumber, string.Empty, string.Empty);
             }
 
             // If a the DialogServiceConnector object already exists, destroy it first
@@ -276,18 +269,15 @@ namespace DLSpeechClient
             // Open a connection to Direct Line Speech channel
             this.connector.ConnectAsync();
 
-            // Save the recent bot secret in the history, so it can easily be retrieved later on
-            this.AddBotIdEntryIntoHistory(this.botSecret);
-
-            if (this.settings.Settings.CustomSpeechEnabled)
+            if (this.settings.RuntimeSettings.CustomSpeechEnabled)
             {
-                this.customSpeechConfig = new CustomSpeechConfiguration(this.settings.Settings.CustomSpeechEndpointId);
+                this.customSpeechConfig = new CustomSpeechConfiguration(this.settings.RuntimeSettings.CustomSpeechEndpointId);
             }
 
-            if (this.settings.Settings.WakeWordEnabled)
+            if (this.settings.RuntimeSettings.WakeWordEnabled)
             {
                 // Configure wake word (also known as "keyword")
-                this.activeWakeWordConfig = new WakeWordConfiguration(this.settings.Settings.WakeWordPath);
+                this.activeWakeWordConfig = new WakeWordConfiguration(this.settings.RuntimeSettings.WakeWordPath);
                 this.connector.StartKeywordRecognitionAsync(this.activeWakeWordConfig.WakeWordModel);
             }
         }
@@ -298,7 +288,7 @@ namespace DLSpeechClient
 
             Debug.WriteLine($"SessionStopped event, id = {e.SessionId}");
 
-            if (this.settings.Settings.WakeWordEnabled)
+            if (this.settings.RuntimeSettings.WakeWordEnabled)
             {
                 message = "Stopped actively listening - waiting for wake word";
             }
@@ -348,7 +338,7 @@ namespace DLSpeechClient
             var json = e.Activity;
             var activity = JsonConvert.DeserializeObject<Activity>(json);
 
-            if (e.HasAudio)
+            if (e.HasAudio && activity.Speak != null)
             {
                 var audio = e.Audio;
                 var stream = new ProducerConsumerStream();
@@ -458,7 +448,7 @@ namespace DLSpeechClient
             this.InitSpeechConnector();
 
             var message = "New conversation started - type or press the microphone button";
-            if (this.settings.Settings.WakeWordEnabled)
+            if (this.settings.RuntimeSettings.WakeWordEnabled)
             {
                 message = $"New conversation started - type, press the microphone button, or say the wake word";
             }
@@ -483,7 +473,7 @@ namespace DLSpeechClient
                 try
                 {
                     // Bugbug: ListenOnceAsync() doesn't generate Session Started during KWS; if KWS is enabled, fake it here
-                    if (this.settings.Settings.WakeWordEnabled)
+                    if (this.settings.RuntimeSettings.WakeWordEnabled)
                     {
                         this.Connector_SessionStarted(null, null);
                     }
@@ -507,11 +497,6 @@ namespace DLSpeechClient
         private void Mic_Click(object sender, RoutedEventArgs e)
         {
             this.StopAnyTTSPlayback();
-
-            if (this.botSecret != null && this.botSecret != this.botSecretLabel.Text)
-            {
-                this.SwitchToNewBotEndpoint();
-            }
 
             if (this.ListeningState == ListenState.NotListening)
             {
@@ -569,11 +554,6 @@ namespace DLSpeechClient
 
             e.Handled = true;
 
-            if (this.botSecret != null && this.botSecret != this.botSecretLabel.Text)
-            {
-                this.SwitchToNewBotEndpoint();
-            }
-
             if (this.connector == null)
             {
                 this.InitSpeechConnector();
@@ -581,9 +561,9 @@ namespace DLSpeechClient
 
             var bfActivity = Activity.CreateMessageActivity();
             bfActivity.Text = this.statusBox.Text;
-            if (!string.IsNullOrEmpty(this.settings.Settings.FromId))
+            if (!string.IsNullOrEmpty(this.settings.RuntimeSettings.FromId))
             {
-                bfActivity.From = new ChannelAccount(this.settings.Settings.FromId);
+                bfActivity.From = new ChannelAccount(this.settings.RuntimeSettings.FromId);
             }
 
             this.statusBox.Clear();
@@ -728,52 +708,11 @@ namespace DLSpeechClient
             }
         }
 
-        private void BotEndpoint_SelectionChanged(object sender, RoutedEventArgs e)
-        {
-            System.Diagnostics.Trace.TraceInformation($"BotEndpoint_SelectionChanged: {this.botSecretLabel.Text}");
-        }
-
-        private void BotEndpoint_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            System.Diagnostics.Trace.TraceInformation($"BotEndpoint_TextChanged: {this.botSecretLabel.Text}");
-        }
-
         private void BotEndpoint_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
                 this.Reset();
-            }
-        }
-
-        private void Clear_Click(object sender, RoutedEventArgs e)
-        {
-            this.RemoveBotIdEntryFromHistory(this.botSecretLabel.Text);
-        }
-
-        private void AddBotIdEntryIntoHistory(string botSecret)
-        {
-            var urlhistory = this.settings.DisplaySettings.UrlHistory;
-
-            var existingItem = urlhistory.FirstOrDefault(item => string.Compare(item, botSecret, StringComparison.OrdinalIgnoreCase) == 0);
-            if (existingItem == null)
-            {
-                urlhistory.Insert(0, botSecret);
-                if (urlhistory.Count == UrlHistoryMaxLength)
-                {
-                    urlhistory.RemoveAt(UrlHistoryMaxLength - 1);
-                }
-            }
-        }
-
-        private void RemoveBotIdEntryFromHistory(string botSecret)
-        {
-            var urlhistory = this.settings.DisplaySettings.UrlHistory;
-
-            var existingItem = urlhistory.FirstOrDefault(item => string.Compare(item, botSecret, StringComparison.OrdinalIgnoreCase) == 0);
-            if (existingItem != null)
-            {
-                urlhistory.Remove(existingItem);
             }
         }
 
@@ -808,7 +747,7 @@ namespace DLSpeechClient
 
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
-            var settingsDialog = new SettingsDialog(this.settings.Settings);
+            var settingsDialog = new SettingsDialog(this.settings.RuntimeSettings);
             var succeeded = settingsDialog.ShowDialog();
 
             // BUGBUG: Do not call reset, leave it for later as this is usually the first action.

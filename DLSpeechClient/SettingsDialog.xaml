@@ -38,10 +38,10 @@
                 <Label  Grid.Row="0" Grid.Column="0" Content="General settings:" FontWeight="Bold" />
 
                 <Label Grid.Row="1" Grid.Column="0" Content="Subscription key:"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Name='SubscriptionKeyTextBox' Text="{Binding SubscriptionKey}" TextChanged="SubscriptionKeyTextBox_TextChanged"/>
+                <ComboBox Grid.Row="1" Grid.Column="1" Name="SubscriptionKeyComboBox" IsEditable="True"  Padding="5" TextBoxBase.TextChanged="SubscriptionKeyTextBox_TextChanged"  Text="{Binding SubscriptionKey}"/>
 
                 <Label  Grid.Row="2" Grid.Column="0" Content="Subscription key region:"/>
-                <TextBox  Grid.Row="2" Grid.Column="1" Name='SubscriptionKeyRegionTextBox' Text="{Binding SubscriptionKeyRegion}" TextChanged="SubscriptionKeyRegionTextBox_TextChanged" />
+                <ComboBox  Grid.Row="2" Grid.Column="1" Name='SubscriptionRegionComboBox'  IsEditable="True" TextBoxBase.TextChanged="SubscriptionKeyRegionTextBox_TextChanged" Text="{Binding SubscriptionKeyRegion}"/>
 
                 <Label Grid.Row="3" Grid.Column="0" Content="User From Id:"/>
                 <TextBox Grid.Row="3" Grid.Column="1" Name='FromIdTextBox' Text="{Binding FromId}"/>

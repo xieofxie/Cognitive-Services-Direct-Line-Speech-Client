@@ -15,13 +15,13 @@ namespace DLSpeechClient.Settings
         public AppSettings()
         {
             this.DisplaySettings = new DisplaySettings();
-            this.Settings = new RuntimeSettings();
+            this.RuntimeSettings = new RuntimeSettings();
         }
 
         [Trackable]
         public DisplaySettings DisplaySettings { get; set; }
 
         [Trackable]
-        public RuntimeSettings Settings { get; set; }
+        public RuntimeSettings RuntimeSettings { get; set; }
     }
 }
