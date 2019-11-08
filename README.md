@@ -20,7 +20,7 @@ The Direct Line Speech Client is a Windows Presentation Foundation (WPF) applica
 * Accepts typed text and speech captured by a microphone as inputs for your bot
 * Supports playback of audio response
 * Supports use of [custom wake-words](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-devices-sdk-create-kws)
-* Supports sending custom [Bot-Framework Activities](https://github.com/Microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-activity.md) as JSON
+* Supports sending custom [Bot-Framework Activities](https://github.com/Microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-activity.md) as JSON to the bot
 * Displays [Adaptive Cards](https://adaptivecards.io/) sent from your bot (with some limitations)
 * Exports the transcript and activity logs to a file
 
@@ -34,7 +34,7 @@ Let's review the hardware, software, and subscriptions that you'll need to use t
 - Visual Studio 2017 or higher
 - Microphone access
 - An Azure [Speech Services Key](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/get-started)
-- A [Bot-Framework](https://dev.botframework.com/) bot service registered with Direct Line Speech channel
+- A [Bot-Framework](https://dev.botframework.com/) bot service registered with [Direct Line Speech](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-directlinespeech?view=azure-bot-service-4.0) channel
 
 ### Quickstart
 
@@ -54,15 +54,13 @@ Let's review the hardware, software, and subscriptions that you'll need to use t
     - The default input language is "en-us" (US English). Update the _Language_ field as needed to select a different [language code from the "Speech-to-text" list](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support).
     - Press _Ok_ when you're done.
     - Your entires will be saved and populated automatically when you launch the app again.
-    ![Setting page](docs/media/SettingsPage.png)
-6. In the main window, enter your **Bot Secret**. This is one of the two channel secret keys provided when you
-registered your Bot-Framework bot with the Direct Line Speech channel.
-   ![Main Page](docs/media/MainPage.png)
-7. Press **Reconnect**. The application will try to connect to your bot via Direct Line Speech channel.
+    ![Setting page](docs/media/SettingsPage.png)  
+6. Press **Reconnect**. The application will try to connect to your bot via Direct Line Speech channel.
+ ![Main Page](docs/media/MainPage.png)
 The message **New conversation started -- type or press the microphone button** will appear below the text bar if the connection succeeded.
-8. You'll be prompted to allow microphone access. If you want to use the microphone, allow access.
-9. Press the microphone icon to begin recording. While speaking, intermediate recognition results will be shown in the application. The microphone icon will turn red while recording is in progress. It will automatically detect end of speech and stop recording.
-10. If everything works, you should see your bot's response on the screen and hear it speak the response. You can click on lines in the **Activity Log** window to see the full activity payload from the bot in JSON.
+7. You'll be prompted to allow microphone access. If you want to use the microphone, allow access.
+8. Press the microphone icon to begin recording. While speaking, intermediate recognition results will be shown in the application. The microphone icon will turn red while recording is in progress. It will automatically detect end of speech and stop recording.
+9. If everything works, you should see your bot's response on the screen and hear it speak the response. You can click on lines in the **Activity Log** window to see the full activity payload from the bot in JSON.
     **Note**: You'll only hear the bot's voice response if the [**Speak** field](https://github.com/Microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-activity.md#speak) in the bot's output activity was set.
 
     ![Main Page](docs/media/MainPageWithActivity.png)
@@ -73,8 +71,7 @@ If an error messages was shown in red in the main application window, use this t
 
 | Error | What should you do? |
 |-------|----------------------|
-|App Error (see log for details): Microsoft.CognitiveServices.Speech.csharp : Value cannot be null. Parameter name: speechConfig | This is a client application error. Make sure you have a non-empty value for *Bot Secret* in the main app window | 
-|Error AuthenticationFailure : WebSocket Upgrade failed with an authentication error (401). Please check for correct subscription key (or authorization token) and region name| In the Settings page of the application, make sure you entered the Speech Subscription key and its region correctly.<br>Make sure your Bot Secret was entered correctly. |
+|Error AuthenticationFailure : WebSocket Upgrade failed with an authentication error (401). Please check for correct subscription key (or authorization token) and region name| In the Settings page of the application, make sure you entered the Speech Subscription key and its region correctly.|
 |Error ConnectionFailure : Connection was closed by the remote host. Error code: 1011. Error details: We could not connect to the bot before sending a message | Make sure you [checked the "Enable Streaming Endpoint" box and/or toggled "Web sockets" to On](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-directlinespeech?view=azure-bot-service-4.0#enable-the-bot-framework-protocol-streaming-extensions)<br>Make sure your Azure App Service is running. If it is, try restarting your App Service.|
 |Error ConnectionFailure : Connection was closed by the remote host. Error code: 1011. Error details: Response status code does not indicate success: 500 (InternalServerError)| Your bot specified a Neural Voice in its output Activity [Speak](https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-activity.md#speak) field, but the Azure region associated with your Speech subscription key does not support Neural Voices. See [Standard and neural voices](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/regions#standard-and-neural-voices).|
 |Error ConnectionFailure : Connection was closed by the remote host. Error code: 1000. Error details: Exceeded maximum websocket connection idle duration(> 300000ms)| This is an expected error when the client left the connection to the channel open for more than 5 minutes without any activity |
@@ -87,19 +84,22 @@ Direct Line Speech Client allows you to author and send a custom JSON activity t
 
 ## Resources
 - [Bot Framework](https://dev.botframework.com/) docs:
-  - [About Direct Line](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/get-started)
+  - [About Direct Line](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-directline?view=azure-bot-service-4.0)
   - [Connect a bot to Direct Line Speech](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-directlinespeech?view=azure-bot-service-4.0)
   - [Use Direct Line Speech in your bot](https://docs.microsoft.com/en-us/azure/bot-service/directline-speech-bot?view=azure-bot-service-4.0)
   - [Bot-Framework Activities](https://github.com/Microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-activity.md)
+  - [Azure Bot Service pricing](https://azure.microsoft.com/en-gb/pricing/details/bot-service/)
 - [Speech SDK](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-sdk) docs:
-  - [About custom voice-first virtual assistants](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/voice-first-virtual-assistants)
+  - [About voice assistants](https://docs.microsoft.com/en-us/azure/cognitive-services/Speech-Service/voice-assistants)
   - [Tutorial: Voice-enable your bot using the Speech SDK](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/tutorial-voice-enable-your-bot-speech-sdk)
-  - [Voice-first virtual assistants: Frequently asked questions](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/faq-voice-first-virtual-assistants)
+  - [Voice assistants: Frequently asked questions](https://docs.microsoft.com/en-us/azure/cognitive-services/Speech-Service/faq-voice-assistants)
   - [Troubleshoot the Speech SDK](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/troubleshooting)
-  - [Quickstart: Create a voice-first virtual assistant with the Speech SDK, UWP](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/quickstart-virtual-assistant-csharp-uwp)
-  - [Quickstart: Create a voice-first virtual assistant with the Speech SDK, Java](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/quickstart-virtual-assistant-java-jre)
-  - [Quickstart: Create a voice-first virtual assistant in Java on Android by using the Speech SDK](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/quickstart-virtual-assistant-java-android)
+  - [Quickstart: Create a voice assistant with the Speech SDK, UWP](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/quickstart-voice-assistant-csharp-uwp)
+  - [Quickstart: Create a voice assistant with the Speech SDK, Java](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/quickstart-voice-assistant-java-jre)
+  - [Quickstart: Create a voice assistant in Java on Android by using the Speech SDK](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/quickstart-voice-assistant-java-android)
   - [Create a custom wake word by using the Speech service](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-devices-sdk-create-kws)
   - [Try Speech Services for free](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/get-started)
   - [Language and region support for the Speech Services](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support)
+  - [Speech Service supported regions](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/regions)
+  - [Speech Synthesis Markup Language (SSML)](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup)
 - [Adaptive Cards](https://adaptivecards.io/)
