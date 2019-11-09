@@ -208,6 +208,10 @@ namespace DLSpeechClient
                 // Set your custom speech end-point id here, as given to you by the speech portal https://speech.microsoft.com/portal.
                 // Otherwise the standard speech end-point will be used.
                 config.SetServiceProperty("cid", this.settings.RuntimeSettings.CustomSpeechEndpointId, ServicePropertyChannel.UriQueryParameter);
+
+                // Custom Speech does not support cloud Keyword Verification at the moment. If this is not done, there will be an error
+                // from the service and connection will close. Remove line below when supported.
+                config.SetProperty("KeywordConfig_EnableKeywordVerification", "false");
             }
 
             if (!string.IsNullOrEmpty(this.settings.RuntimeSettings.FromId))
