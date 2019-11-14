@@ -43,6 +43,8 @@ namespace DLSpeechClient
                 this.LogFilePath,
                 this.CustomSpeechEndpointId,
                 this.CustomSpeechEnabled,
+                this.VoiceDeploymentIds,
+                this.VoiceDeploymentEnabled,
                 this.WakeWordEnabled,
                 this.UrlOverride,
                 this.ProxyHostName,
@@ -52,6 +54,7 @@ namespace DLSpeechClient
                 this.settings.CognitiveServiceRegionHistory) = settings.Get();
 
             this.CustomSpeechConfig = new CustomSpeechConfiguration(settings.CustomSpeechEndpointId);
+            this.VoiceDeploymentConfig = new VoiceDeploymentConfiguration(settings.VoiceDeploymentIds);
             this.WakeWordConfig = new WakeWordConfiguration(settings.WakeWordPath);
 
             this.InitializeComponent();
@@ -85,11 +88,18 @@ namespace DLSpeechClient
 
         public bool CustomSpeechEnabled { get; set; }
 
+        public VoiceDeploymentConfiguration VoiceDeploymentConfig { get; set; }
+
+        public string VoiceDeploymentIds { get; set; }
+
+        public bool VoiceDeploymentEnabled { get; set; }
+
         protected override void OnContentRendered(EventArgs e)
         {
             this.WakeWordPathTextBox.Text = this.settings.WakeWordPath ?? string.Empty;
             this.UpdateOkButtonState();
             this.UpdateCustomSpeechStatus(false);
+            this.UpdateVoiceDeploymentIdsStatus(false);
             this.UpdateWakeWordStatus();
             base.OnContentRendered(e);
             this.renderComplete = true;
@@ -115,6 +125,8 @@ namespace DLSpeechClient
                 this.LogFilePath,
                 this.CustomSpeechEndpointId,
                 this.CustomSpeechEnabled,
+                this.VoiceDeploymentIds,
+                this.VoiceDeploymentEnabled,
                 this.WakeWordConfig.Path,
                 this.WakeWordEnabled,
                 this.UrlOverride,
@@ -254,6 +266,54 @@ namespace DLSpeechClient
             }
 
             this.CustomSpeechStatusLabel.Content = "Click to enable";
+        }
+
+        private void VoiceDeploymentEnabledBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (this.renderComplete)
+            {
+                this.UpdateVoiceDeploymentIdsStatus(true);
+            }
+        }
+
+        private void UpdateVoiceDeploymentIdsStatus(bool updateLabelOnInvalidContent)
+        {
+            this.VoiceDeploymentConfig = new VoiceDeploymentConfiguration(this.VoiceDeploymentIdsTextBox.Text);
+
+            if (!this.VoiceDeploymentConfig.IsValid)
+            {
+                if (updateLabelOnInvalidContent)
+                {
+                    this.VoiceDeploymentStatusLabel.Content = "Invalid voice deployment IDs format";
+                    Debug.WriteLine("Invalid voice deployment IDs format. It needs to be a GUID in the format ########-####-####-####-############");
+                }
+                else
+                {
+                    this.VoiceDeploymentStatusLabel.Content = "Click to enable";
+                }
+
+                this.VoiceDeploymentEnabled = false;
+                this.VoiceDeploymentEnabledBox.IsChecked = false;
+            }
+            else if (this.VoiceDeploymentEnabled)
+            {
+                this.VoiceDeploymentStatusLabel.Content = "Voice deployment IDs will be used upon next connection";
+            }
+            else
+            {
+                this.VoiceDeploymentStatusLabel.Content = "Click to enable";
+            }
+        }
+
+        private void VoiceDeploymentIdsTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (this.renderComplete)
+            {
+                this.VoiceDeploymentEnabled = false;
+                this.VoiceDeploymentEnabledBox.IsChecked = false;
+            }
+
+            this.VoiceDeploymentStatusLabel.Content = "Click to enable";
         }
 
         private void UpdateWakeWordStatus()

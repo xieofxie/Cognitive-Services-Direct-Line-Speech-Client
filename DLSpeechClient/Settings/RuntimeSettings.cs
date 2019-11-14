@@ -23,6 +23,8 @@ namespace DLSpeechClient.Settings
         private string logFilePath;
         private string customSpeechEndpointId;
         private bool customSpeechEnabled;
+        private string voiceDeploymentIds;
+        private bool voiceDeploymentEnabled;
         private string wakeWordPath;
         private bool wakeWordEnabled;
         private string urlOverride;
@@ -80,6 +82,18 @@ namespace DLSpeechClient.Settings
             set => this.SetProperty(ref this.customSpeechEnabled, value);
         }
 
+        public string VoiceDeploymentIds
+        {
+            get => this.voiceDeploymentIds;
+            set => this.SetProperty(ref this.voiceDeploymentIds, value);
+        }
+
+        public bool VoiceDeploymentEnabled
+        {
+            get => this.voiceDeploymentEnabled;
+            set => this.SetProperty(ref this.voiceDeploymentEnabled, value);
+        }
+
         public bool WakeWordEnabled
         {
             get => this.wakeWordEnabled;
@@ -109,6 +123,7 @@ namespace DLSpeechClient.Settings
             get => this.fromId;
             set => this.SetProperty(ref this.fromId, value);
         }
+
         public ObservableCollection<string> CognitiveServiceKeyHistory
         {
             get
@@ -116,7 +131,6 @@ namespace DLSpeechClient.Settings
                 return this.cognitiveServiceKeyHistory;
             }
 
-            
             set
             {
                 if (this.cognitiveServiceKeyHistory != null)
@@ -128,7 +142,6 @@ namespace DLSpeechClient.Settings
                 this.cognitiveServiceKeyHistory.CollectionChanged += this.CognitiveServiceKeyHistory_CollectionChanged;
                 this.OnPropertyChanged();
             }
-            
         }
 
         public ObservableCollection<string> CognitiveServiceRegionHistory
@@ -138,7 +151,6 @@ namespace DLSpeechClient.Settings
                 return this.cognitiveServiceRegionHistory;
             }
 
-            
             set
             {
                 if (this.cognitiveServiceRegionHistory != null)
@@ -150,10 +162,9 @@ namespace DLSpeechClient.Settings
                 this.cognitiveServiceRegionHistory.CollectionChanged += this.CognitiveServiceRegionHistory_CollectionChanged;
                 this.OnPropertyChanged();
             }
-            
         }
 
-        internal (string subscriptionKey, string subscriptionKeyRegion, string language, string logFilePath, string customSpeechEndpointId, bool customSpeechEnabled, bool wakeWordEnabled, string urlOverride,
+        internal (string subscriptionKey, string subscriptionKeyRegion, string language, string logFilePath, string customSpeechEndpointId, bool customSpeechEnabled, string voiceDeploymentIds, bool voiceDeploymentEnabled, bool wakeWordEnabled, string urlOverride,
             string proxyHostName, string proxyPortNumber, string fromId, ObservableCollection<string> CognitiveServiceKeyHistory, ObservableCollection<string> CognitiveServiceRegionHistory) Get()
         {
             return (
@@ -163,6 +174,8 @@ namespace DLSpeechClient.Settings
                 this.logFilePath,
                 this.customSpeechEndpointId,
                 this.customSpeechEnabled,
+                this.voiceDeploymentIds,
+                this.voiceDeploymentEnabled,
                 this.wakeWordEnabled,
                 this.urlOverride,
                 this.proxyHostName,
@@ -179,12 +192,14 @@ namespace DLSpeechClient.Settings
             string logFilePath,
             string customSpeechEndpointId,
             bool customSpeechEnabled,
+            string voiceDeploymentIds,
+            bool voiceDeploymentEnabled,
             string wakeWordPath,
             bool wakeWordEnabled,
             string urlOverride,
             string proxyHostName,
             string proxyPortNumber,
-            string fromId, 
+            string fromId,
             ObservableCollection<string> cognitiveServiceKeyHistory,
             ObservableCollection<string> cognitiveServiceRegionHistory)
         {
@@ -194,6 +209,8 @@ namespace DLSpeechClient.Settings
                 this.logFilePath,
                 this.customSpeechEndpointId,
                 this.customSpeechEnabled,
+                this.voiceDeploymentIds,
+                this.voiceDeploymentEnabled,
                 this.wakeWordPath,
                 this.wakeWordEnabled,
                 this.urlOverride,
@@ -209,6 +226,8 @@ namespace DLSpeechClient.Settings
                 logFilePath,
                 customSpeechEndpointId,
                 customSpeechEnabled,
+                voiceDeploymentIds,
+                voiceDeploymentEnabled,
                 wakeWordPath,
                 wakeWordEnabled,
                 urlOverride,
@@ -227,6 +246,7 @@ namespace DLSpeechClient.Settings
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
         protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

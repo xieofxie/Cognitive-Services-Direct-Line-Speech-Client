@@ -34,8 +34,6 @@ namespace DLSpeechClient
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:Types that own disposable fields should be disposable", Justification = "Objects are disposed OnClosed()")]
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private const int UrlHistoryMaxLength = 10;
-
         private AppSettings settings = new AppSettings();
         private DialogServiceConnector connector = null;
         private WaveOutEvent player = new WaveOutEvent();
@@ -204,7 +202,6 @@ namespace DLSpeechClient
 
             if (this.settings.RuntimeSettings.CustomSpeechEnabled)
             {
-                // config.SetServiceProperty(PropertyId.SpeechServiceConnection_EnableAudioLogging
                 // Set your custom speech end-point id here, as given to you by the speech portal https://speech.microsoft.com/portal.
                 // Otherwise the standard speech end-point will be used.
                 config.SetServiceProperty("cid", this.settings.RuntimeSettings.CustomSpeechEndpointId, ServicePropertyChannel.UriQueryParameter);
@@ -212,6 +209,14 @@ namespace DLSpeechClient
                 // Custom Speech does not support cloud Keyword Verification at the moment. If this is not done, there will be an error
                 // from the service and connection will close. Remove line below when supported.
                 config.SetProperty("KeywordConfig_EnableKeywordVerification", "false");
+            }
+
+            if (this.settings.RuntimeSettings.VoiceDeploymentEnabled)
+            {
+                // Set one or more IDs associated with the custom TTS voice your bot will use
+                // The format of the string is one or more GUIDs separated by comma (no spaces). You get these GUIDs from
+                // your custom TTS on the speech portal https://speech.microsoft.com/portal.
+                config.SetProperty(PropertyId.Conversation_Custom_Voice_Deployment_Ids, this.settings.RuntimeSettings.VoiceDeploymentIds);
             }
 
             if (!string.IsNullOrEmpty(this.settings.RuntimeSettings.FromId))

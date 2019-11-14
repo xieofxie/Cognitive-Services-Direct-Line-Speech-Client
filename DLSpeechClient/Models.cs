@@ -131,6 +131,35 @@ namespace DLSpeechClient
         public bool IsValid { get; private set; }
     }
 
+    public class VoiceDeploymentConfiguration
+    {
+        public VoiceDeploymentConfiguration(string voiceDeploymentIds)
+        {
+            if (voiceDeploymentIds == null)
+            {
+                voiceDeploymentIds = string.Empty;
+            }
+
+            this.VoiceDeploymentIds = voiceDeploymentIds;
+
+            // TODO: Change the code below to accept multiple GUIDs, separated by comma
+            Guid parsedGuid = Guid.Empty;
+            if (Guid.TryParse(this.VoiceDeploymentIds, out parsedGuid) &&
+                parsedGuid.ToString("D", null).Equals(this.VoiceDeploymentIds, StringComparison.OrdinalIgnoreCase))
+            {
+                this.IsValid = true;
+            }
+            else
+            {
+                this.IsValid = false;
+            }
+        }
+
+        public string VoiceDeploymentIds { get; private set; }
+
+        public bool IsValid { get; private set; }
+    }
+
     public class WakeWordConfiguration
     {
         public WakeWordConfiguration(string path)
