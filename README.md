@@ -57,7 +57,6 @@ Let's review the hardware, software, and subscriptions that you'll need to use t
     - The default input language is "en-us" (US English). Update the _Language_ field as needed to select a different [language code from the "Speech-to-text" list](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support).
     - Press _Ok_ when you're done.
     - Your entires will be saved and populated automatically when you launch the app again.
-
 ![Setting page](docs/media/SettingsPage.png)  
 6. Press **Reconnect**. The application will try to connect to your bot via Direct Line Speech channel.
 ![Main Page](docs/media/MainPage.png)
@@ -66,8 +65,7 @@ The message **New conversation started -- type or press the microphone button** 
 8. Press the microphone icon to begin recording. While speaking, intermediate recognition results will be shown in the application. The microphone icon will turn red while recording is in progress. It will automatically detect end of speech and stop recording.
 9. If everything works, you should see your bot's response on the screen and hear it speak the response. You can click on lines in the **Activity Log** window to see the full activity payload from the bot in JSON.
     **Note**: You'll only hear the bot's voice response if the [**Speak** field](https://github.com/Microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-activity.md#speak) in the bot's output activity was set.
-
-    ![Main Page](docs/media/MainPageWithActivity.png)
+![Main Page with Activity](docs/media/MainPageWithActivity.png)
 
 ## Troubleshooting
 
