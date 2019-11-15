@@ -17,8 +17,10 @@ namespace DLSpeechClient.Settings
     {
         private ObservableCollection<string> cognitiveServiceKeyHistory = new ObservableCollection<string>();
         private ObservableCollection<string> cognitiveServiceRegionHistory = new ObservableCollection<string>();
+        private ObservableCollection<string> customCommandsAppIdHistory = new ObservableCollection<string>();
         private string subscriptionKey;
         private string subscriptionKeyRegion;
+        private string customCommandsAppId;
         private string language;
         private string logFilePath;
         private string customSpeechEndpointId;
@@ -50,6 +52,12 @@ namespace DLSpeechClient.Settings
         {
             get => this.subscriptionKeyRegion;
             set => this.SetProperty(ref this.subscriptionKeyRegion, value);
+        }
+
+        public string CustomCommandsAppId
+        {
+            get => this.customCommandsAppId;
+            set => this.SetProperty(ref this.customCommandsAppId, value);
         }
 
         public string Language
@@ -164,12 +172,33 @@ namespace DLSpeechClient.Settings
             }
         }
 
-        internal (string subscriptionKey, string subscriptionKeyRegion, string language, string logFilePath, string customSpeechEndpointId, bool customSpeechEnabled, string voiceDeploymentIds, bool voiceDeploymentEnabled, bool wakeWordEnabled, string urlOverride,
+        public ObservableCollection<string> CustomCommandsAppIdHistory
+        {
+            get
+            {
+                return this.customCommandsAppIdHistory;
+            }
+
+            set
+            {
+                if (this.customCommandsAppIdHistory != null)
+                {
+                    this.customCommandsAppIdHistory.CollectionChanged -= this.CustomCommandsAppIdHistory_CollectionChanged;
+                }
+
+                this.customCommandsAppIdHistory = value;
+                this.customCommandsAppIdHistory.CollectionChanged += this.CustomCommandsAppIdHistory_CollectionChanged;
+                this.OnPropertyChanged();
+            }
+        }
+
+        internal (string subscriptionKey, string subscriptionKeyRegion, string customCommandsAppId, string language, string logFilePath, string customSpeechEndpointId, bool customSpeechEnabled, string voiceDeploymentIds, bool voiceDeploymentEnabled, bool wakeWordEnabled, string urlOverride,
             string proxyHostName, string proxyPortNumber, string fromId, ObservableCollection<string> CognitiveServiceKeyHistory, ObservableCollection<string> CognitiveServiceRegionHistory) Get()
         {
             return (
                 this.subscriptionKey,
                 this.subscriptionKeyRegion,
+                this.customCommandsAppId,
                 this.language,
                 this.logFilePath,
                 this.customSpeechEndpointId,
@@ -188,6 +217,7 @@ namespace DLSpeechClient.Settings
         internal void Set(
             string subscriptionKey,
             string subscriptionKeyRegion,
+            string customCommandsAppId,
             string language,
             string logFilePath,
             string customSpeechEndpointId,
@@ -205,6 +235,7 @@ namespace DLSpeechClient.Settings
         {
             (this.subscriptionKey,
                 this.subscriptionKeyRegion,
+                this.customCommandsAppId,
                 this.language,
                 this.logFilePath,
                 this.customSpeechEndpointId,
@@ -222,6 +253,7 @@ namespace DLSpeechClient.Settings
                 =
             (subscriptionKey,
                 subscriptionKeyRegion,
+                customCommandsAppId,
                 language,
                 logFilePath,
                 customSpeechEndpointId,
@@ -260,6 +292,11 @@ namespace DLSpeechClient.Settings
         private void CognitiveServiceRegionHistory_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnPropertyChanged(nameof(this.CognitiveServiceRegionHistory));
+        }
+
+        private void CustomCommandsAppIdHistory_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            this.OnPropertyChanged(nameof(this.CustomCommandsAppIdHistory));
         }
     }
 }

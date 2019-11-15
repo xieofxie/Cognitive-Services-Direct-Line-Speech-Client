@@ -8,9 +8,6 @@ namespace DLSpeechClient
     using System.Diagnostics;
     using System.Globalization;
     using System.IO;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using System.Windows;
     using Microsoft.Bot.Schema;
     using Microsoft.CognitiveServices.Speech;

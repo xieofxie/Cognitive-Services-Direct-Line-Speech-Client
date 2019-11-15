@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DLSpeechClient"
         mc:Ignorable="d"
-        Title="Settings" MinHeight="610" Height="610" Width="600" MinWidth="500" >
+        Title="Settings" MinHeight="630" Height="630" Width="600" MinWidth="500" >
     <Window.Resources>
         <Style TargetType="{x:Type TextBox}">
             <Setter Property="Margin" Value="0,2"/>
@@ -33,6 +33,7 @@
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
 
                 <Label  Grid.Row="0" Grid.Column="0" Content="General settings:" FontWeight="Bold" />
@@ -43,14 +44,17 @@
                 <Label  Grid.Row="2" Grid.Column="0" Content="Subscription key region:"/>
                 <ComboBox  Grid.Row="2" Grid.Column="1" Name='SubscriptionRegionComboBox'  IsEditable="True" TextBoxBase.TextChanged="SubscriptionKeyRegionTextBox_TextChanged" Text="{Binding SubscriptionKeyRegion}"/>
 
-                <Label Grid.Row="3" Grid.Column="0" Content="User From Id:"/>
-                <TextBox Grid.Row="3" Grid.Column="1" Name='FromIdTextBox' Text="{Binding FromId}"/>
+                <Label Grid.Row="3" Grid.Column="0" Content="Custom commands app Id:"/>
+                <ComboBox Grid.Row="3" Grid.Column="1" Name="CustomCommandsAppIdComboBox" IsEditable="True"  Padding="5" TextBoxBase.TextChanged="CustomCommandsAppIdTextBox_TextChanged"  Text="{Binding CustomCommandsAppId}"/>
 
-                <Label  Grid.Row="4" Grid.Column="0" Content="Language:"/>
-                <TextBox Grid.Row="4" Grid.Column="1" Name='LanguageTextBox'  Text="{Binding ConnectionLanguage}" />
+                <Label Grid.Row="4" Grid.Column="0" Content="User From Id:"/>
+                <TextBox Grid.Row="4" Grid.Column="1" Name='FromIdTextBox' Text="{Binding FromId}"/>
 
-                <Label  Grid.Row="5" Grid.Column="0" Content="Log file path:"/>
-                <TextBox Grid.Row="5" Grid.Column="1"  Name="LogFileTextBox" Text="{Binding LogFilePath}"/>
+                <Label  Grid.Row="5" Grid.Column="0" Content="Language:"/>
+                <TextBox Grid.Row="5" Grid.Column="1" Name='LanguageTextBox'  Text="{Binding ConnectionLanguage}" />
+
+                <Label  Grid.Row="6" Grid.Column="0" Content="Log file path:"/>
+                <TextBox Grid.Row="6" Grid.Column="1"  Name="LogFileTextBox" Text="{Binding LogFilePath}"/>
             </Grid>
 
             <Grid Margin="0,5,5,0">

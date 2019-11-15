@@ -4,20 +4,11 @@
 namespace DLSpeechClient
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Data;
-    using System.Windows.Documents;
-    using System.Windows.Input;
-    using System.Windows.Media;
-    using System.Windows.Media.Imaging;
-    using System.Windows.Shapes;
     using DLSpeechClient.Settings;
     using Microsoft.Win32;
 
@@ -39,6 +30,7 @@ namespace DLSpeechClient
             (
                 this.SubscriptionKey,
                 this.SubscriptionKeyRegion,
+                this.CustomCommandsAppId,
                 this.ConnectionLanguage,
                 this.LogFilePath,
                 this.CustomSpeechEndpointId,
@@ -65,6 +57,8 @@ namespace DLSpeechClient
         public string SubscriptionKey { get; set; }
 
         public string SubscriptionKeyRegion { get; set; }
+
+        public string CustomCommandsAppId { get; set; }
 
         public string ConnectionLanguage { get; set; }
 
@@ -111,6 +105,8 @@ namespace DLSpeechClient
             this.SubscriptionKeyComboBox.Text = this.SubscriptionKey;
             this.SubscriptionRegionComboBox.ItemsSource = this.settings.CognitiveServiceRegionHistory;
             this.SubscriptionRegionComboBox.Text = this.SubscriptionKeyRegion;
+            this.CustomCommandsAppIdComboBox.ItemsSource = this.settings.CustomCommandsAppIdHistory;
+            this.CustomCommandsAppIdComboBox.Text = this.CustomCommandsAppId;
             base.OnActivated(e);
         }
 
@@ -118,9 +114,11 @@ namespace DLSpeechClient
         {
             this.AddCognitiveServicesKeyEntryIntoHistory(this.SubscriptionKey);
             this.AddCognitiveServicesRegionEntryIntoHistory(this.SubscriptionKeyRegion);
+            this.AddCustomCommandsAppIdEntryIntoHistory(this.CustomCommandsAppId);
             this.settings.Set(
                 this.SubscriptionKey,
                 this.SubscriptionKeyRegion,
+                this.CustomCommandsAppId,
                 this.ConnectionLanguage,
                 this.LogFilePath,
                 this.CustomSpeechEndpointId,
@@ -145,6 +143,7 @@ namespace DLSpeechClient
             var keyHistory = this.settings.CognitiveServiceKeyHistory;
 
             var existingItem = keyHistory.FirstOrDefault(item => string.Compare(item, cognitiveServicesKey, StringComparison.OrdinalIgnoreCase) == 0);
+
             if (existingItem == null)
             {
                 keyHistory.Insert(0, cognitiveServicesKey);
@@ -160,12 +159,29 @@ namespace DLSpeechClient
             var regionHistory = this.settings.CognitiveServiceRegionHistory;
 
             var existingItem = regionHistory.FirstOrDefault(item => string.Compare(item, cognitiveServicesKey, StringComparison.OrdinalIgnoreCase) == 0);
+
             if (existingItem == null)
             {
                 regionHistory.Insert(0, cognitiveServicesKey);
                 if (regionHistory.Count == UrlHistoryMaxLength)
                 {
                     regionHistory.RemoveAt(UrlHistoryMaxLength - 1);
+                }
+            }
+        }
+
+        private void AddCustomCommandsAppIdEntryIntoHistory(string customCommandsAppId)
+        {
+            var idHistory = this.settings.CustomCommandsAppIdHistory;
+
+            var existingItem = idHistory.FirstOrDefault(item => string.Compare(item, customCommandsAppId, StringComparison.OrdinalIgnoreCase) == 0);
+
+            if (existingItem == null)
+            {
+                idHistory.Insert(0, customCommandsAppId);
+                if (idHistory.Count == UrlHistoryMaxLength)
+                {
+                    idHistory.RemoveAt(UrlHistoryMaxLength - 1);
                 }
             }
         }
@@ -342,6 +358,11 @@ namespace DLSpeechClient
         }
 
         private void SubscriptionKeyTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            this.UpdateOkButtonState();
+        }
+
+        private void CustomCommandsAppIdTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             this.UpdateOkButtonState();
         }

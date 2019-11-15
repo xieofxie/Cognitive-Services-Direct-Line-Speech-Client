@@ -188,10 +188,24 @@ namespace DLSpeechClient
             if (!string.IsNullOrWhiteSpace(this.settings.RuntimeSettings.SubscriptionKey) &&
                 !string.IsNullOrWhiteSpace(this.settings.RuntimeSettings.SubscriptionKeyRegion))
             {
-                // Set the dialog service configuration object based on two items:
-                // Cognitive services speech subscription key. It is needed for billing and is tied to the bot registration.
-                // The Azure region of the subscription key(e.g. "westus").
-                config = BotFrameworkConfig.FromSubscription(this.settings.RuntimeSettings.SubscriptionKey, this.settings.RuntimeSettings.SubscriptionKeyRegion);
+                if (!string.IsNullOrWhiteSpace(this.settings.RuntimeSettings.CustomCommandsAppId))
+                {
+                    //
+                    // NOTE: Custom commands is a preview Azure Service
+                    //
+                    // Set the custom commands configuration object based on three items:
+                    // - The Custom commands application ID
+                    // - Cognitive services speech subscription key.
+                    // - The Azure region of the subscription key(e.g. "westus").
+                    config = CustomCommandsConfig.FromSubscription(this.settings.RuntimeSettings.CustomCommandsAppId, this.settings.RuntimeSettings.SubscriptionKey, this.settings.RuntimeSettings.SubscriptionKeyRegion);
+                }
+                else
+                {
+                    // Set the bot framework configuration object based on two items:
+                    // - Cognitive services speech subscription key. It is needed for billing and is tied to the bot registration.
+                    // - The Azure region of the subscription key(e.g. "westus").
+                    config = BotFrameworkConfig.FromSubscription(this.settings.RuntimeSettings.SubscriptionKey, this.settings.RuntimeSettings.SubscriptionKeyRegion);
+                }
             }
 
             if (!string.IsNullOrWhiteSpace(this.settings.RuntimeSettings.Language))
