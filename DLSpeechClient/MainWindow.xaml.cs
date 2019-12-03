@@ -495,15 +495,7 @@ namespace DLSpeechClient
 
                 try
                 {
-                    // Bugbug: ListenOnceAsync() doesn't generate Session Started during KWS; if KWS is enabled, fake it here
-                    if (this.settings.RuntimeSettings.WakeWordEnabled)
-                    {
-                        this.Connector_SessionStarted(null, null);
-                    }
-                    else
-                    {
-                        this.ListeningState = ListenState.Initiated;
-                    }
+                    this.ListeningState = ListenState.Initiated;
 
                     this.connector.ListenOnceAsync();
                     System.Diagnostics.Debug.WriteLine("Started ListenOnceAsync");
