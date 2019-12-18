@@ -19,6 +19,7 @@ namespace DLSpeechClient
     using AdaptiveCards;
     using AdaptiveCards.Rendering;
     using AdaptiveCards.Rendering.Wpf;
+    using DLSpeechClient.LocalBotConnector;
     using DLSpeechClient.Settings;
     using Microsoft.Bot.Schema;
     using Microsoft.CognitiveServices.Speech;
@@ -35,7 +36,7 @@ namespace DLSpeechClient
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private AppSettings settings = new AppSettings();
-        private DialogServiceConnector connector = null;
+        private Connector connector = null;
         private WaveOutEvent player = new WaveOutEvent();
         private Queue<WavQueueEntry> playbackStreams = new Queue<WavQueueEntry>();
         private WakeWordConfiguration activeWakeWordConfig = null;
@@ -281,7 +282,7 @@ namespace DLSpeechClient
             }
 
             // Create a new Dialog Service Connector for the above configuration and register to receive events
-            this.connector = new DialogServiceConnector(config, AudioConfig.FromDefaultMicrophoneInput());
+            this.connector = new Connector(config, AudioConfig.FromDefaultMicrophoneInput());
             this.connector.ActivityReceived += this.Connector_ActivityReceived;
             this.connector.Recognizing += this.Connector_Recognizing;
             this.connector.Recognized += this.Connector_Recognized;
@@ -356,11 +357,12 @@ namespace DLSpeechClient
             this.UpdateStatus(e.Result.Text, tentative: true);
         }
 
-        private void Connector_ActivityReceived(object sender, ActivityReceivedEventArgs e)
+        private void Connector_ActivityReceived(object sender, ActivityReceivedEventArgsLocal e)
         {
             var json = e.Activity;
             var activity = JsonConvert.DeserializeObject<Activity>(json);
 
+#if false
             if (e.HasAudio && activity.Speak != null)
             {
                 var audio = e.Audio;
@@ -391,7 +393,7 @@ namespace DLSpeechClient
                     Task.Run(() => this.PlayFromAudioQueue());
                 }
             }
-
+#endif
             List<AdaptiveCard> cardsToBeRendered = new List<AdaptiveCard>();
             if (activity.Attachments?.Any() is true)
             {
